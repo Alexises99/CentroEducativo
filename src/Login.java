@@ -49,18 +49,19 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		try {
-			String token = login(user,password);
+			String v[]= login(user,password);
 			//response.getWriter().append(res);
 			map.put(user,new User(user,password));
 			HttpSession session = request.getSession(true);
-			session.setAttribute("token", token);
+			session.setAttribute("token", v[0]);
+			session.setAttribute("cookie", v[1]);
 			response.sendRedirect("listarAsignaturas.html");
 		} catch(Exception e) {
 			System.err.print(e.toString());
 		}
 	}
 	
-	public String login(String user, String password) throws Exception{
+	public String[] login(String user, String password) throws Exception{
 		
 		JSONObject json = new JSONObject();
 		json.put("dni", user);
@@ -77,10 +78,11 @@ public class Login extends HttpServlet {
 		Call call = client.newCall(request);
 		
 			Response response = call.execute();
+			String cookie = response.header("Set-Cookie");
 			
 			String token = response.body().string();
-			
-			return token;
+			String[]v= {token,cookie};
+			return v;
 	}
 
 }

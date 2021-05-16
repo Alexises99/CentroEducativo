@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.MediaType;
@@ -43,7 +46,7 @@ public class ListaAsignaturas extends HttpServlet {
 		User user = login.map.get(request.getRemoteUser());
 		HttpSession session = request.getSession(false);
 		String token = (String)session.getAttribute("token");
-		response.getWriter().append(token);
+		String cookie = (String)session.getAttribute("cookie");
 		if (token.equals(null)) {
 			session.putValue("dni", user.getDni());
 			session.putValue("password", user.getPassword());
@@ -60,24 +63,36 @@ public class ListaAsignaturas extends HttpServlet {
 		}
 		
 		//response.getWriter().append(token);
-		String res = get(token);
-		response.getWriter().append(res);
+		String res = get(token,cookie);
+		String head = "<head><title>Asignaturas</title></head><body>";
+		String html = "";
+		JSONArray jsonArray = new JSONArray(res);
+		for (int i = 0; i < jsonArray.length(); i++) {
+		    JSONObject asignatura = jsonArray.getJSONObject(i);
+		    html += "<div><p>Nombre: "+asignatura.getString("nombre")+"</p><form action='VerAsignatura'><input type='text' name='index"+i+"' value='"+i+"'><button>Seleccionar</button></div>";
+		    
+		}
+		String full = head+html+"</body>";
+		response.getWriter().append(full);
+
+		//response.getWriter().append(res);
 		
 		
 		
 	}
 	
-	public String get(String token) {
+	public String get(String token,String cookie) {
 		String url = "http://localhost:9090/CentroEducativo/asignaturas";
 		HttpUrl.Builder urlBuilder 
 	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token);
+	    urlBuilder.addQueryParameter("key", token); //?id=0
 	    String url1 = urlBuilder.build().toString();
 	   
 	    
 		Request request = new Request.Builder()
 				.url(url1)
 				.header("Content-Type", "application/json")
+				.header("Cookie", cookie)
 				.build();
 		Call call = client.newCall(request);
 		
