@@ -36,14 +36,19 @@ public class ListaAsignaturas extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//HttpSession session = request.getSession(false);
-		//if(session == null) {
-			//response.getWriter().append("<title>Error</title></head><body>");
-			//response.sendRedirect("index.html");
-		//}
-		String token = request.getParameter("token");
+		HttpSession session = request.getSession(false);
+		if (session.getAttribute("token").equals(null)) {
+			if(request.login(request.getRe, password);)
+				if(session.getAttribute("token").equals(obj)) {
+					session.putValue("token", value);
+				}
+				else {
+					
+				}
+		}
 		//response.getWriter().append(token);
 		try {
 			String res = get(token);
