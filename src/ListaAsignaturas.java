@@ -40,20 +40,24 @@ public class ListaAsignaturas extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		Login login = new Login();
+		User user = login.map.get(request.getRemoteUser());
 		HttpSession session = request.getSession(false);
-		if (session.getAttribute("token").equals(null)) {
-			if) {
-				session.putValue("dni", usuarioEnTomcat);
-				session.putValue("pass", passwordEnTomcat);
-				if(login.login(usuariologed, passwordlogged).equals(login.login((String) session.getAttribute("dni"),(String) session.getAttribute("pass")))) {
-					session.putValue("token", value);
+		String token = (String)session.getAttribute("token");
+		if (token.equals(null)) {
+			session.putValue("dni", user.getDni());
+			session.putValue("password", user.getPassword());
+			try {
+				if(token.equals(login.login(user.getDni(), user.getPassword()))) {
+					session.putValue("token", token);
 				}
 				else {
-					
+					response.setStatus(402);
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-				
 		}
+		
 		//response.getWriter().append(token);
 		try {
 			String res = get(token);

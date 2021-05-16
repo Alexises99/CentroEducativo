@@ -1,6 +1,8 @@
 
 
 import java.io.IOException;
+import java.util.HashMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +25,9 @@ import com.squareup.okhttp.Response;
  */
 @WebServlet("/Login")
 public class Login extends HttpServlet {
+	
+	
+	public HashMap<String,User> map = new HashMap<String,User>();
 	private static final long serialVersionUID = 1L;
 	private final OkHttpClient client = new OkHttpClient();
 	public static final MediaType MEDIA_TYPE_JSON
@@ -45,7 +50,8 @@ public class Login extends HttpServlet {
 		
 		try {
 			String res = login(user,password);
-			response.getWriter().append(res);
+			//response.getWriter().append(res);
+			map.put(user,new User(user,password));
 			HttpSession session = request.getSession(true);
 			session.setAttribute("token", res);
 			response.sendRedirect("listarAsignaturas.html");
