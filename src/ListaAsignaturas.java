@@ -69,7 +69,7 @@ public class ListaAsignaturas extends HttpServlet {
 		JSONArray jsonArray = new JSONArray(res);
 		for (int i = 0; i < jsonArray.length(); i++) {
 		    JSONObject asignatura = jsonArray.getJSONObject(i);
-		    html += "<div><p>Nombre: "+asignatura.getString("nombre")+"</p><form action='VerAsignatura'><input type='text' name='index"+i+"' value='"+i+"'><button>Seleccionar</button></div>";
+		    html += "<div><p>Nombre: "+asignatura.getString("nombre")+"</p><form action='VerAsignatura'><input type='text' name='index' value='"+i+"'><button>Seleccionar</button></div>";
 		    
 		}
 		String full = head+html+"</body>";
