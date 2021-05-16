@@ -42,7 +42,7 @@ public class ListaAsignaturas extends HttpServlet {
 		Login login = new Login();
 		HttpSession session = request.getSession(false);
 		if (session.getAttribute("token").equals(null)) {
-			if(request.login((String) session.getAttribute("dni"), (String) session.getAttribute("password"))) {
+			if) {
 				session.putValue("dni", usuarioEnTomcat);
 				session.putValue("pass", passwordEnTomcat);
 				if(login.login(usuariologed, passwordlogged).equals(login.login((String) session.getAttribute("dni"),(String) session.getAttribute("pass")))) {
