@@ -49,11 +49,11 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		try {
-			String res = login(user,password);
+			String token = login(user,password);
 			//response.getWriter().append(res);
 			map.put(user,new User(user,password));
 			HttpSession session = request.getSession(true);
-			session.setAttribute("token", res);
+			session.setAttribute("token", token);
 			response.sendRedirect("listarAsignaturas.html");
 		} catch(Exception e) {
 			System.err.print(e.toString());
@@ -75,14 +75,12 @@ public class Login extends HttpServlet {
 			.build();
 		
 		Call call = client.newCall(request);
-		try {
+		
 			Response response = call.execute();
-			String token = response.body().string();
-			return token;
 			
-		} catch(Exception e) {
-			return(e.toString());
-		}
+			String token = response.body().string();
+			
+			return token;
 	}
 
 }

@@ -43,6 +43,7 @@ public class ListaAsignaturas extends HttpServlet {
 		User user = login.map.get(request.getRemoteUser());
 		HttpSession session = request.getSession(false);
 		String token = (String)session.getAttribute("token");
+		response.getWriter().append(token);
 		if (token.equals(null)) {
 			session.putValue("dni", user.getDni());
 			session.putValue("password", user.getPassword());
@@ -59,35 +60,36 @@ public class ListaAsignaturas extends HttpServlet {
 		}
 		
 		//response.getWriter().append(token);
-		try {
-			String res = get(token);
-			response.getWriter().append(res);
-		} catch(Exception e) {
-			System.err.print(e.toString());
-		}
+		String res = get(token);
+		response.getWriter().append(res);
+		
 		
 		
 	}
 	
-	public String get(String token) throws Exception {
+	public String get(String token) {
 		String url = "http://localhost:9090/CentroEducativo/asignaturas";
 		HttpUrl.Builder urlBuilder 
 	      = HttpUrl.parse(url).newBuilder();
 	    urlBuilder.addQueryParameter("key", token);
-	    url = urlBuilder.build().toString();
+	    String url1 = urlBuilder.build().toString();
 	   
 	    
 		Request request = new Request.Builder()
-				.url(url)
-				.addHeader("Content-Type", "application/json")
+				.url(url1)
+				.header("Content-Type", "application/json")
 				.build();
 		Call call = client.newCall(request);
-		try {
-			Response response = call.execute();
-			return response.body().string();
-		} catch(Exception e) {
-			return(e.toString());
-		}
+		
+			Response response;
+			
+			try {
+				response = call.execute();
+				return response.body().string();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				return "holamal";
+			}
 	}
 	
 
