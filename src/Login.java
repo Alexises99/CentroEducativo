@@ -44,7 +44,7 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		try {
-			String res = post(user,password);
+			String res = login(user,password);
 			response.getWriter().append(res);
 			HttpSession session = request.getSession(true);
 			session.setAttribute("token", res);
@@ -54,7 +54,7 @@ public class Login extends HttpServlet {
 		}
 	}
 	
-	public String post(String user, String password) throws Exception{
+	public String login(String user, String password) throws Exception{
 		
 		JSONObject json = new JSONObject();
 		json.put("dni", user);
