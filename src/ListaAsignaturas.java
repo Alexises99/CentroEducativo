@@ -38,13 +38,13 @@ public class ListaAsignaturas extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		HttpSession session = request.getSession(false);
-		if(session == null) {
-			response.getWriter().append("<title>Error</title></head><body>");
-			response.sendRedirect("index.html");
-		}
-		String token = (String) session.getAttribute("token");
-		response.getWriter().append(token);
+		//HttpSession session = request.getSession(false);
+		//if(session == null) {
+			//response.getWriter().append("<title>Error</title></head><body>");
+			//response.sendRedirect("index.html");
+		//}
+		String token = request.getParameter("token");
+		//response.getWriter().append(token);
 		try {
 			String res = get(token);
 			response.getWriter().append(res);
@@ -59,7 +59,7 @@ public class ListaAsignaturas extends HttpServlet {
 		String url = "http://localhost:9090/CentroEducativo/asignaturas";
 		HttpUrl.Builder urlBuilder 
 	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token.trim());
+	    urlBuilder.addQueryParameter("key", token);
 	    url = urlBuilder.build().toString();
 	   
 	    
