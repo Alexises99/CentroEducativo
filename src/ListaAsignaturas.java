@@ -69,7 +69,7 @@ public class ListaAsignaturas extends HttpServlet {
 		JSONArray jsonArray = new JSONArray(res);
 		for (int i = 0; i < jsonArray.length(); i++) {
 		    JSONObject asignatura = jsonArray.getJSONObject(i);
-		    html += "<form action='VerAsignatura'><div><p>Nombre: "+asignatura.getString("nombre")+"</p><input type='hidden' name='index' value='"+asignatura.getString("acronimo")+"'/><button>Seleccionar</button></div></form>";
+		    html += "<form action='VerAsignatura'><div><a href='VerAsignatura'>"+asignatura.getString("asignatura")+"</a><input type='hidden' name='index' value='"+asignatura.getString("")+"'/><button>Seleccionar</button></div></form>";
 		    
 		}
 		String full = head+html+"</body>";
@@ -82,7 +82,7 @@ public class ListaAsignaturas extends HttpServlet {
 	}
 	
 	public String get(String token,String cookie,String user) {
-		String url = "http://localhost:9090/CentroEducativo/asignaturas";
+		String url = "http://localhost:9090/CentroEducativo/alumnos/"+user+"/asignaturas";
 		HttpUrl.Builder urlBuilder 
 	      = HttpUrl.parse(url).newBuilder();
 	    urlBuilder.addQueryParameter("key", token); //?id=0
