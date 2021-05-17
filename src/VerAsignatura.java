@@ -37,26 +37,25 @@ public class VerAsignatura extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String index = request.getParameter("index");
+		String nombre = request.getParameter("nombre");
+		String nota = request.getParameter("nota");
 		HttpSession session = request.getSession(false);
 		String token = (String)session.getAttribute("token");
 		String cookie = (String)session.getAttribute("cookie");
-		String res = get(token,cookie,index);
+		//String res = get(token,cookie,index);
 		
-		JSONObject json = new JSONObject(res);
+		//JSONObject json = new JSONObject(res);
 		String html ="<head>"
-				+ "<title>"+json.getString("acronimo")+"</title>"
+				+ "<title>"+nombre+"</title>"
 				+ "</head>"
 				+ "<body>"
 				+ "<div>"
-				+ "<p>Nombre: " + json.getString("nombre") + "</p>"
-				+ "<p>Curso: " + json.getInt("curso") + "</p>"
-				+ "<p>Acronimo: " + json.getString("acronimo") + "</p>"
-				+ "<p>Cuatrimestre " + json.getString("cuatrimestre") + "</p>"
-				+ "<p>Cuatrimestre " + json.getDouble("creditos") + "</p>"
+				+ "<p>Cuatrimestre " + nombre + "</p>"
+				+ "<p>Nota " + nota + "</p>"
 				+ "</div>"
 				+ "</body>";
 		response.getWriter().append(html);
+		request.logout();
 		
 	}
 	
