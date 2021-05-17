@@ -94,6 +94,11 @@ public class ListaAsignaturas extends HttpServlet {
 			    		+ "<div>"
 			    		+ "<p>Creditos "+asignatura.getDouble("creditos")+"</p>"
 			    		+ "</div>"
+			    		+ "<div>"
+			    		+ "<form action='ListarAlumnosAsignatura'>"
+			    		+ "<input type='hidden' name='acronimo' value='"+asignatura.getString("acronimo")+"'/>"
+			    		+ "<button>Ver alumnos</button>"
+			    		+ "</div>"
 			    		+ "</div>";	
 			}
 			String full = head+html+"</body>";
@@ -134,8 +139,6 @@ public class ListaAsignaturas extends HttpServlet {
 			}
 	}
 	
-	
-
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
