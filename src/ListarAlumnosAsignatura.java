@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.squareup.okhttp.Call;
@@ -17,17 +18,16 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 /**
- * Servlet implementation class VerAsignatura
+ * Servlet implementation class ListarAlumnosAsignatura
  */
-@WebServlet("/VerAsignatura")
-public class VerAsignatura extends HttpServlet {
+@WebServlet("/ListarAlumnosAsignatura")
+public class ListarAlumnosAsignatura extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final OkHttpClient client = new OkHttpClient();
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public VerAsignatura() {
+    public ListarAlumnosAsignatura() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -37,33 +37,39 @@ public class VerAsignatura extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String nombre = request.getParameter("nombre");
-		String nota = request.getParameter("nota");
-		HttpSession session = request.getSession(false);
-		String token = (String)session.getAttribute("token");
-		String cookie = (String)session.getAttribute("cookie");
-		//String res = get(token,cookie,index);
+		String acronimo = request.getParameter("acronimo");
+		HttpSession session = request.getSession(true);
+		String token = (String) session.getAttribute("token");
+		String cookie = (String) session.getAttribute("cookie");
+		String res = " "+getAlumnos(acronimo,token,cookie);
+		JSONArray jsonArray = new JSONArray(res);
+		String head = "<head><title>Asignaturas</title></head><body>";
+		String html = "";
+		for (int i = 0; i < jsonArray.length(); i++) {
+		    JSONObject asignatura = jsonArray.getJSONObject(i);
+		    html += "<div>"
+		    		+ "<div>"
+		    		+ "<p> Nombre Alumno: "+asignatura.getString("alumno")+"/>"
+		    		+ "</div>"
+		    		+ "<div>"
+		    		+ "<p> Nota: " + asignatura.getString("nota") + "</p>"
+		    		+ "</div>"
+		    		+ "<div>"
+		    		+ "<button>Modificar Nota</button>"
+		    		+ "</div>";
+		}
+		String full = head+html+"</body>";
+		response.getWriter().append(full);
 		
-		//JSONObject json = new JSONObject(res);
-		String html ="<head>"
-				+ "<title>"+nombre+"</title>"
-				+ "</head>"
-				+ "<body>"
-				+ "<div>"
-				+ "<p>Cuatrimestre " + nombre + "</p>"
-				+ "<p>Nota " + nota + "</p>"
-				+ "</div>"
-				+ "</body>";
-		response.getWriter().append(html);
-		request.logout();
 		
 	}
-	
-	public String get(String token, String cookie, String acronimo) {
-		String url = "http://localhost:9090/CentroEducativo/asignaturas/"+acronimo;
+
+	public String getAlumnos(String acronimo,String token,String cookie) {
+		OkHttpClient client = new OkHttpClient();
+		String url = "http://localhost:9090/CentroEducativo/asignaturas/"+acronimo+"/alumnos";
 		HttpUrl.Builder urlBuilder 
 	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token);
+	    urlBuilder.addQueryParameter("key", token); 
 	    String url1 = urlBuilder.build().toString();
 	   
 	    
@@ -84,7 +90,6 @@ public class VerAsignatura extends HttpServlet {
 				return "holamal";
 			}
 	}
-
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */

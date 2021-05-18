@@ -45,7 +45,7 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String user = request.getParameter("user");
+		/**String user = request.getParameter("user");
 		String password = request.getParameter("password");
 		
 		try {
@@ -55,34 +55,12 @@ public class Login extends HttpServlet {
 			HttpSession session = request.getSession(true);
 			session.setAttribute("token", v[0]);
 			session.setAttribute("cookie", v[1]);
+			session.setAttribute("dni", user);
 			response.sendRedirect("listarAsignaturas.html");
 		} catch(Exception e) {
 			System.err.print(e.toString());
-		}
+		}*/
 	}
 	
-	public String[] login(String user, String password) throws Exception{
-		
-		JSONObject json = new JSONObject();
-		json.put("dni", user);
-		json.put("password",password);
-		RequestBody body = RequestBody.create(
-				MediaType.parse("application/json"),json.toString());
-		
-				
-		Request request = new Request.Builder()
-			.url("http://localhost:9090/CentroEducativo/login")
-			.post(body)
-			.build();
-		
-		Call call = client.newCall(request);
-		
-			Response response = call.execute();
-			String cookie = response.header("Set-Cookie");
-			
-			String token = response.body().string();
-			String[]v= {token,cookie};
-			return v;
-	}
 
 }
