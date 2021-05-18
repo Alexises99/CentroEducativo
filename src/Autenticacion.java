@@ -71,7 +71,6 @@ public class Autenticacion implements Filter {
 			if(!(login == null)) {
 				
 				User user = credentialsWithBasicAuthentication(request);
-				
 				User user1 = new User(dni,user.getPassword());
 				map.put(user.getDni(), user1);
 				session.setAttribute("dni", map.get(user.getDni()).getDni());
