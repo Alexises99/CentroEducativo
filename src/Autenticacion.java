@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.squareup.okhttp.Call;
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -55,27 +57,25 @@ public class Autenticacion implements Filter {
 		// place your code here
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-		HashMap<String,User> map = new HashMap<String,User>();
+		HashMap<String,UsuarioFull> map = populate();
 		HttpSession session = request.getSession(true);
 		String token = "";
-		String dni = request.getParameter("dni");
-		if(dni == null) return;
 		try {
 			token = (String) session.getAttribute("token");
 		} catch(Exception e) {
 			token = null;
 		}
 		String cookie = "";
+		
 		if(token == null) {
-			String login = request.getRemoteUser();
+			User user = credentialsWithBasicAuthentication(request);
+			String login = user.getDni();
+			
 			if(!(login == null)) {
-				
-				User user = credentialsWithBasicAuthentication(request);
-				User user1 = new User(dni,user.getPassword());
-				map.put(user.getDni(), user1);
-				session.setAttribute("dni", map.get(user.getDni()).getDni());
-				session.setAttribute("password", map.get(user.getDni()).getPassword());
-					String v[] = login(map.get(user.getDni()).getDni(),map.get(user.getDni()).getPassword());
+				String dni1 = login;
+				session.setAttribute("dni", map.get(login).getDni());
+				session.setAttribute("password",user.getPassword());
+					String v[] = login(map.get(login).getDni(),user.getPassword());
 					token = v[0];
 					session.setAttribute("token", token);
 					cookie =  v[1];
@@ -92,6 +92,83 @@ public class Autenticacion implements Filter {
 		}
 		chain.doFilter(request, response);
 	}
+	
+	public HashMap<String,UsuarioFull> populate() throws IOException {
+		HashMap<String,UsuarioFull> map = new HashMap<String,UsuarioFull>();
+		String v[] = login("111111111","654321");
+		String token = v[0];
+		String cookie = v[1];
+		String url = "http://localhost:9090/CentroEducativo/alumnos";
+		OkHttpClient client = new OkHttpClient();
+		HttpUrl.Builder urlBuilder 
+	      = HttpUrl.parse(url).newBuilder();
+	    urlBuilder.addQueryParameter("key", token); 
+	    String url1 = urlBuilder.build().toString();
+	   
+		Request request = new Request.Builder()
+				.url(url1)
+				.header("Content-Type", "application/json")
+				.header("Cookie", cookie)
+				.build();
+		Call call = client.newCall(request);
+		
+		Response response;
+		String res="";
+		try {
+			response = call.execute();
+			res = " "+response.body().string();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			res = "";
+		}
+		
+		
+			JSONArray json = new JSONArray(res);
+			for (int i = 0; i < json.length(); i++) {
+			    JSONObject alumno = json.getJSONObject(i);
+			    UsuarioFull user = new UsuarioFull(alumno.getString("dni"),alumno.getString("nombre"));
+			    map.put(user.getNombre(),user);
+			}
+			String res1 = getProfs();
+			JSONArray json1 = new JSONArray(res1);
+			for (int i = 0; i < json1.length(); i++) {
+			    JSONObject profesor = json1.getJSONObject(i);
+			    UsuarioFull user = new UsuarioFull(profesor.getString("dni"),profesor.getString("nombre"));
+			    map.put(user.getNombre(),user);
+			}
+			return map;
+	}
+	
+	public String getProfs() throws IOException {
+		OkHttpClient client = new OkHttpClient();
+		
+		String v[] = login("111111111","654321");
+		String token1 = v[0];
+		String cookie1 = v[1];
+		String url = "http://localhost:9090/CentroEducativo/profesores";
+		HttpUrl.Builder urlBuilder
+	      = HttpUrl.parse(url).newBuilder();
+	    urlBuilder.addQueryParameter("key", token1); 
+	    String urlq = urlBuilder.build().toString();
+	   
+		Request request1 = new Request.Builder()
+				.url(urlq)
+				.header("Content-Type", "application/json")
+				.header("Cookie", cookie1)
+				.build();
+		Call call1 = client.newCall(request1);
+		Response response1;
+	    String res1 ="";
+		try {
+			response1 = call1.execute();
+			res1 = " "+response1.body().string();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			res1 = "";
+		}
+		return res1;
+	}
+
 	
 	public String[] login(String user,String password) throws IOException {
 		OkHttpClient client = new OkHttpClient();
