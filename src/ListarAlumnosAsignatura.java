@@ -49,7 +49,7 @@ public class ListarAlumnosAsignatura extends HttpServlet {
 		    JSONObject asignatura = jsonArray.getJSONObject(i);
 		    html += "<div>"
 		    		+ "<div>"
-		    		+ "<p> Nombre Alumno: "+asignatura.getString("alumno")+"/>"
+		    		+ "<p> Dni Alumno: "+asignatura.getString("alumno")+"</p>"
 		    		+ "</div>"
 		    		+ "<div>"
 		    		+ "<p> Nota: " + asignatura.getString("nota") + "</p>"

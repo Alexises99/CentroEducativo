@@ -50,7 +50,7 @@ public class VerAsignatura extends HttpServlet {
 				+ "</head>"
 				+ "<body>"
 				+ "<div>"
-				+ "<p>Cuatrimestre " + nombre + "</p>"
+				+ "<p>Nombre " + nombre + "</p>"
 				+ "<p>Nota " + nota + "</p>"
 				+ "</div>"
 				+ "</body>";
