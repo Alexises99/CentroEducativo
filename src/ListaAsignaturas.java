@@ -98,6 +98,7 @@ public class ListaAsignaturas extends HttpServlet {
 			    		+ "<form action='ListarAlumnosAsignatura'>"
 			    		+ "<input type='hidden' name='acronimo' value='"+asignatura.getString("acronimo")+"'/>"
 			    		+ "<button>Ver alumnos</button>"
+			    		+ "</form>"
 			    		+ "</div>"
 			    		+ "</div>";	
 			}
@@ -105,12 +106,6 @@ public class ListaAsignaturas extends HttpServlet {
 			response.getWriter().append(full);
 			
 		}
-		
-		
-		
-
-		//response.getWriter().append(res);
-		
 	}
 	
 	public String getAsignaturas(String token,String cookie,String user,String rol) {
