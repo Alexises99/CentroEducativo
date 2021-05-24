@@ -67,6 +67,7 @@ public class ListaAsignaturas extends HttpServlet {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
 			    html += "<div><a href='VerAsignatura?nombre="+asignatura.getString("asignatura")+"&nota="+asignatura.getString("nota")+"'>"+asignatura.getString("asignatura")+"</a>";
 			}
+			html+="<a href='DetallesAlumno'>Ver certificado</a>";
 			String full = head+html+"</body>";
 			response.getWriter().append(full);
 		

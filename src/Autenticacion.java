@@ -72,6 +72,9 @@ public class Autenticacion implements Filter {
 			String login = user.getDni();
 			
 			if(!(login == null)) {
+				if(map.get(login).getDni() == null|| user.getPassword() == null) {
+					response.sendError(422, "Unathorized");
+				}
 				session.setAttribute("dni", map.get(login).getDni());
 				session.setAttribute("password",user.getPassword());
 					String v[] = login(map.get(login).getDni(),user.getPassword());
