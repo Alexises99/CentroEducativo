@@ -22,10 +22,10 @@ import org.json.JSONObject;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.MediaType;
+
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
+
 import com.squareup.okhttp.Response;
 
 /**
@@ -39,21 +39,18 @@ public class Autenticacion implements Filter {
      */
 	
     public Autenticacion() {
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-		// TODO Auto-generated method stub
 		// place your code here
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
@@ -77,7 +74,7 @@ public class Autenticacion implements Filter {
 				}
 				session.setAttribute("dni", map.get(login).getDni());
 				session.setAttribute("password",user.getPassword());
-					String v[] = login(map.get(login).getDni(),user.getPassword());
+					String v[] = Interacciones.login(map.get(login).getDni(),user.getPassword());
 					token = v[0];
 					session.setAttribute("token", token);
 					cookie =  v[1];
@@ -96,7 +93,7 @@ public class Autenticacion implements Filter {
 	}
 	
 	public String getJsons(String param) throws IOException {
-		String v[] = login("111111111","654321");
+		String v[] = Interacciones.login("111111111","654321");
 		String token = v[0];
 		String cookie = v[1];
 		String url = "http://localhost:9090/CentroEducativo/"+param;
@@ -152,31 +149,6 @@ public class Autenticacion implements Filter {
 			return map;
 	}
 	
-	
-	public String[] login(String user,String password) throws IOException {
-		OkHttpClient client = new OkHttpClient();
-		JSONObject json = new JSONObject();
-		json.put("dni", user);
-		json.put("password",password);
-		
-		RequestBody body = RequestBody.create(
-				MediaType.parse("application/json"),json.toString());
-		
-				
-		Request request = new Request.Builder()
-			.url("http://localhost:9090/CentroEducativo/login")
-			.post(body)
-			.build();
-		
-		Call call = client.newCall(request);
-		
-			Response response = call.execute();
-			String cookie = response.header("Set-Cookie");
-			
-			String token = response.body().string();
-			String[]v= {token,cookie};
-			return v;
-	}
 
 	public User credentialsWithBasicAuthentication(HttpServletRequest req) {
 	    String authHeader = req.getHeader("Authorization");

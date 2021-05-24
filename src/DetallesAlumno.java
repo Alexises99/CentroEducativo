@@ -1,6 +1,7 @@
 
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,21 +12,13 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 /**
  * Servlet implementation class DetallesAlumno
  */
 @WebServlet("/DetallesAlumno")
 public class DetallesAlumno extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final OkHttpClient client = new OkHttpClient();
-       
-    /**
+	/**
      * @see HttpServlet#HttpServlet()
      */
     public DetallesAlumno() {
@@ -39,12 +32,10 @@ public class DetallesAlumno extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession(false);
-		String token = (String) session.getAttribute("token");
-		String cookie = (String) session.getAttribute("cookie");
 		String dni = (String) session.getAttribute("dni");
 		
-		String alumno = getDescription(token,cookie,dni);
-		String asignaturas= " "+getAsignaturas(token,cookie,dni);
+		String alumno = Interacciones.getAlumnoDni(dni);
+		String asignaturas= " "+Interacciones.getAsignaturasDeAlumno(dni);
 		JSONObject Alumno = new JSONObject(alumno);
 		
 		
@@ -58,7 +49,10 @@ public class DetallesAlumno extends HttpServlet {
 				"  <title>Certificado de Notas</title>"
 				+ "</head>"
 				+ "<body>"
-				+ "<div class=\"mx-5 my-4\">" + 
+				+ "<div>" + 
+				"        <img src=\"def.png\"  class=\"img-fluid\"/>" + 
+				"    </div>"+
+			    "<div class=\"mx-5 my-4\">" + 
 				"            <div class=\"text-center mx-5\">" + 
 				"                <h2 class=\"text-info\">Certificado sin validez academica</h2>" + 
 				"                <h3>Curso 2020/2021</h3>" + 
@@ -107,7 +101,7 @@ public class DetallesAlumno extends HttpServlet {
 		for (int i = 0; i < jsonArray.length(); i++) {
 		    JSONObject asignatura = jsonArray.getJSONObject(i);
 		    
-		    String s = getName(token,cookie,asignatura.getString("asignatura"));
+		    String s = Interacciones.getAsignaturasPorAcronimo(asignatura.getString("asignatura"));
 		    JSONObject asignatura1 = new JSONObject(s);
 		    html += " <tr>" + 
 		    		" <th scope=\"row\">"+asignatura1.getString("acronimo")+"</th>" + 
@@ -126,83 +120,6 @@ public class DetallesAlumno extends HttpServlet {
 				"</html>";
 		response.getWriter().append(html);
 				
-	}
-	
-	public String getDescription(String token,String cookie,String user) {
-		String url = "http://localhost:9090/CentroEducativo/alumnos/"+user;
-		HttpUrl.Builder urlBuilder 
-	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token); 
-	    String url1 = urlBuilder.build().toString();
-	   
-	    
-		Request request = new Request.Builder()
-				.url(url1)
-				.header("Content-Type", "application/json")
-				.header("Cookie", cookie)
-				.build();
-		Call call = client.newCall(request);
-		
-			Response response;
-			
-			try {
-				response = call.execute();
-				return response.body().string();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				return "holamal";
-			}
-	}
-	public String getName(String token,String cookie,String name) {
-		String url = "http://localhost:9090/CentroEducativo/asignaturas/"+name;
-		HttpUrl.Builder urlBuilder 
-	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token); 
-	    String url1 = urlBuilder.build().toString();
-	   
-	    
-		Request request = new Request.Builder()
-				.url(url1)
-				.header("Content-Type", "application/json")
-				.header("Cookie", cookie)
-				.build();
-		Call call = client.newCall(request);
-		
-			Response response;
-			
-			try {
-				response = call.execute();
-				return response.body().string();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				return "holamal";
-			}
-	}
-	
-	public String getAsignaturas(String token,String cookie,String user) {
-		String url = "http://localhost:9090/CentroEducativo/alumnos/"+user+"/asignaturas";
-		HttpUrl.Builder urlBuilder 
-	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token); 
-	    String url1 = urlBuilder.build().toString();
-	   
-	    
-		Request request = new Request.Builder()
-				.url(url1)
-				.header("Content-Type", "application/json")
-				.header("Cookie", cookie)
-				.build();
-		Call call = client.newCall(request);
-		
-			Response response;
-			
-			try {
-				response = call.execute();
-				return response.body().string();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				return "holamal";
-			}
 	}
 
 	/**

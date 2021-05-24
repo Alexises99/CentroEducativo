@@ -1,6 +1,7 @@
 
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,11 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 /**
  * Servlet implementation class ListarAlumnosAsignatura
@@ -38,10 +34,7 @@ public class ListarAlumnosAsignatura extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String acronimo = request.getParameter("acronimo");
-		HttpSession session = request.getSession(true);
-		String token = (String) session.getAttribute("token");
-		String cookie = (String) session.getAttribute("cookie");
-		String res = " "+getAlumnos(acronimo,token,cookie);
+		String res = " "+Interacciones.getAlumnosDeAsignatura(acronimo);
 		JSONArray jsonArray = new JSONArray(res);
 		String head = "<head><title>Asignaturas</title></head><body>";
 		String html = "";
@@ -64,32 +57,7 @@ public class ListarAlumnosAsignatura extends HttpServlet {
 		
 	}
 
-	public String getAlumnos(String acronimo,String token,String cookie) {
-		OkHttpClient client = new OkHttpClient();
-		String url = "http://localhost:9090/CentroEducativo/asignaturas/"+acronimo+"/alumnos";
-		HttpUrl.Builder urlBuilder 
-	      = HttpUrl.parse(url).newBuilder();
-	    urlBuilder.addQueryParameter("key", token); 
-	    String url1 = urlBuilder.build().toString();
-	   
-	    
-		Request request = new Request.Builder()
-				.url(url1)
-				.header("Content-Type", "application/json")
-				.header("Cookie", cookie)
-				.build();
-		Call call = client.newCall(request);
-		
-			Response response;
-			
-			try {
-				response = call.execute();
-				return response.body().string();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				return "holamal";
-			}
-	}
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */

@@ -54,22 +54,121 @@ public class ListaAsignaturas extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		String token = (String) session.getAttribute("token");
 		String cookie = (String) session.getAttribute("cookie");
-		
-		
+		String dni = (String) session.getAttribute("dni");
 		
 		
 		if(request.isUserInRole("rolalu")) {
-			String res = " "+getAsignaturas(token,cookie,(String)session.getAttribute("dni"),"alumnos");
+			String res = " "+Interacciones.getAsignaturasDeAlumno(dni);
 			JSONArray jsonArray = new JSONArray(res);
-			String head = "<head><title>Asignaturas</title></head><body>";
-			String html = "";
+			String html = "<!DOCTYPE html>" + 
+					"<html lang=\"en\">" + 
+					"<head>" + 
+					"    <meta charset=\"UTF-8\">" + 
+					"    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" + 
+					"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" + 
+					"    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x\" crossorigin=\"anonymous\">" + 
+					"    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4\" crossorigin=\"anonymous\"></script>" + 
+					"    <script src='jquery-3.6.0.js'></script>" +
+					"    <title>Ver Asignaturas</title>" + 
+					"</head>" + 
+					"<body>" + 
+					"  <div>" + 
+					"        <img src=\"def.png\"  class=\"img-fluid\"/>" + 
+					"    </div>"+
+					"    <div class=\"container mt-3\">" + 
+					"        <div class=\"row\">" + 
+					"          <div class=\"col-md-12\">" + 
+					"            <div class=\"card\">" + 
+					"              <div class=\"card-header\">" + 
+					"                <ul class=\"nav nav-tabs card-header-tabs\" id=\"asignatura-list\" role=\"tablist\">";
+			for(int i = 0;i <jsonArray.length();i++) {
+				JSONObject asignatura = jsonArray.getJSONObject(i);
+				if(i == 0) {
+					html += "<li class=\"nav-item\">" + 
+							"<a class=\"nav-link active\" href=\"#description"+i+"\" role=\"tab\" aria-controls=\"description"+i+"\" aria-selected=\"true\">"+asignatura.getString("asignatura")+"</a>" + 
+							"</li>";
+				}
+				else{
+					html += "<li class=\"nav-item\">" + 
+						"<a class=\"nav-link\" href=\"#description"+i+"\" role=\"tab\" aria-controls=\"description"+i+"\" aria-selected=\"false\">"+asignatura.getString("asignatura")+"</a>" + 
+						"</li>";
+				}
+			}
+					html += 
+					"                </ul>" + 
+					"              </div>" + 
+					"              <div class=\"card-body\">" + 
+					"                <h4 class=\"card-title text-center\">"+dni+"</h4>" + 
+					"                <h6 class=\"card-subtitle mb-2 text-center\">Nombre Alumno</h6>" +  
+					"                <div class=\"tab-content mt-3\">";
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
-			    html += "<div><a href='VerAsignatura?nombre="+asignatura.getString("asignatura")+"&nota="+asignatura.getString("nota")+"'>"+asignatura.getString("asignatura")+"</a>";
-			}
-			html+="<a href='DetallesAlumno'>Ver certificado</a>";
-			String full = head+html+"</body>";
-			response.getWriter().append(full);
+			    if(i == 0) {
+			    	html +=
+							"                  <div class=\"tab-pane active\" id=\"description"+i+"\" role=\"tabpanel\" aria-labelledby=\"description"+i+"-tab\">" + 
+							"                    <div class=\"row\">" + 
+							"                        <div class=\"col-md-6\">" + 
+							"                            <div class=\"h5\">Acronimo: "+asignatura.getString("asignatura")+"</div>" + 
+							"                            <div class=\"h5\">Asignatura: "+asignatura.getString("asignatura")+"</div>" + 
+							"                            <div class=\"h5\">Nota: "+asignatura.getString("nota")+"</div>" +
+							"                        </div>" + 
+							"                        <div class=\"col-md-6\">" + 
+							"                            <div class=\"h4\">Alumnos</div>" + 
+							"                        <ul class=\"list-group\">";
+			    }
+			    else {
+			    	html +=
+			    
+					"                  <div class=\"tab-pane\" id=\"description"+i+"\" role=\"tabpanel\" aria-labelledby=\"description"+i+"-tab\">" + 
+					"                    <div class=\"row\">" + 
+					"                        <div class=\"col-md-6\">" + 
+					"                            <div class=\"h5\">Acronimo: "+asignatura.getString("asignatura")+"</div>" + 
+					"                            <div class=\"h5\">Asignatura: "+asignatura.getString("asignatura")+"</div>" + 
+					"                            <div class=\"h5\">Nota: "+asignatura.getString("nota")+"</div>" + 
+					"                        </div>" + 
+					"                        <div class=\"col-md-6\">" + 
+					"                            <div class=\"h4\">Alumnos</div>" + 
+					"                        <ul class=\"list-group\">";
+			    }
+					String r = " "+Interacciones.getAlumnosDeAsignatura(asignatura.getString("asignatura"));
+					JSONArray jsonArray2 = new JSONArray(r);
+					
+					for(int j = 0; j < jsonArray2.length();j++) {
+						JSONObject alum = jsonArray2.getJSONObject(i);
+						html += "<li class=\"list-group-item\">"+alum.getString("nombre")+alum.getString("apellidos")+"</li>";
+					}
+					html +=                          
+							"                          </ul>" + 
+							"                        </div>" + 
+							"                    </div>" + 
+							"                  </div>";
+				}
+					html += 
+					"                  </div>" + 
+					"                </div>" + 
+					"              </div>" + 
+					"            </div>" + 
+					"          </div>" + 
+					"        </div>" + 
+					"        <div class=\"text-center mt-5\">" + 
+					"	<form action='DetallesAlumno'>"+
+					"            <button id='button' class=\"btn btn-primary\">" + 
+					"                Ver Certificado" + 
+					"            </button>" + "</form>" +
+					"        </div>" + 
+					"      </div>" +
+					"<script>" + 
+					"$('#asignatura-list a').on('click', function (e) {" + 
+					"  e.preventDefault();" + 
+					"  console.log(\"hola\");" + 
+					"  $(this).tab('show');" + 
+					"})"+
+					"</script>"+
+					"</body>"+
+					"</html>"
+					;
+			
+			response.getWriter().append(html);
 		
 		}
 		else if(request.isUserInRole("rolpro")) {
@@ -104,7 +203,7 @@ public class ListaAsignaturas extends HttpServlet {
 			    		+ "</div>";	
 			}
 			String full = head+html+"</body>";
-			response.getWriter().append(full);
+			//response.getWriter().append(full);
 			
 		}
 	}
@@ -130,10 +229,11 @@ public class ListaAsignaturas extends HttpServlet {
 				response = call.execute();
 				return response.body().string();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				return "holamal";
 			}
 	}
+	
+	
 	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
