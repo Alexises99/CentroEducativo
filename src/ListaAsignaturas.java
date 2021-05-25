@@ -134,8 +134,8 @@ public class ListaAsignaturas extends HttpServlet {
 					JSONArray jsonArray2 = new JSONArray(r);
 					
 					for(int j = 0; j < jsonArray2.length();j++) {
-						JSONObject alum = jsonArray2.getJSONObject(i);
-						html += "<li class=\"list-group-item\">"+alum.getString("nombre")+alum.getString("apellidos")+"</li>";
+						JSONObject alum = jsonArray2.getJSONObject(j);
+						html += "<li class=\"list-group-item\">"+alum.getString("alumno")+"</li>";
 					}
 					html +=                          
 							"                          </ul>" + 
