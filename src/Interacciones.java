@@ -94,6 +94,25 @@ public class Interacciones {
 		String url = "http://localhost:9090/CentroEducativo/profesores/"+user;
 		return get(token,cookie,url);
 	}
+	public static String setNotaToAlumno(String user,String acronimo,String nota) throws IOException {
+		String url = "http://localhost:9090/CentroEducativo/alumnos/"+user+"/asignaturas/"+acronimo;
+		JSONObject json = new JSONObject();
+		json.put("nota", nota);
+		RequestBody body = RequestBody.create(
+				MediaType.parse("application/json"),json.toString());
+		
+				
+		Request request = new Request.Builder()
+			.url("http://localhost:9090/CentroEducativo/login")
+			.put(body)
+			.build();
+		
+		Call call = client.newCall(request);
+		
+		Response response = call.execute();
+		if(response.isSuccessful()) return response.body().string();
+		else return "error";
+	}
 	
 	public static String[] login(String user,String password) throws IOException {
 		JSONObject json = new JSONObject();

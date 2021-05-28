@@ -46,7 +46,8 @@ public class DetallesAlumno extends HttpServlet {
 				"  <meta name='viewport' content='width=device-width, initial-scale=1.0'>" + 
 				"  <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x' crossorigin='anonymous'>" + 
 				"  <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js' integrity='sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4' crossorigin='anonymous'></script>" + 
-				"  <title>Certificado de Notas</title>"
+				"  <script src=\"jquery-3.6.0.js\"></script>"
+				+ "<title>Certificado de Notas</title>"
 				+ "</head>"
 				+ "<body>"
 				+ "<div>" + 
@@ -76,12 +77,12 @@ public class DetallesAlumno extends HttpServlet {
 				"                            <div class=\"col-md-6 bg-primary text-white\">" + 
 				"                                Dni: "+
 				"                            </div>" + 
-				"                            <div class=\"col-md-6 \">" + Alumno.getString("dni")+
+				"                            <div class=\"col-md-6 \">" + "<p id='dni'></p>"+
 				"                            </div>" + 
 				"                        </div>" + 
 				"                    </div>" + 
 				"                    <div class=\"col-md-6 inline-block\">" + 
-				"                       <img src=\"default.png\" class=\"\" width=\"250\" height=\"250\"/>" + 
+				"                       <img width=\"250\" id='img' height=\"250\"/>" + 
 				"                    </div>   " + 
 				"                </div>" + 
 				"                <div>" + 
@@ -115,7 +116,18 @@ public class DetallesAlumno extends HttpServlet {
 				"<div class=\"text-center\">" + 
 				"  Valencia" + 
 				"</div>" +
-				"</div>" + 
+				"</div>" +
+				"<script>"+
+				"$.getJSON(\"Foto?dni=12345678W\")\n" + 
+				".done(function(response){\n" + 
+				"$(\"#dni\").text(response.dni);\n" + 
+				"$(\"#img\").attr(\"src\", \"data:image/png;base64,\"+response.img);\n" + 
+				"})\n" + 
+				".fail(function(jqxhr, textStatus, error ) {\n" + 
+				" var err = jqxhr.response.replace(\",\", \"\\n\"); // Pequeños ajustes\n" + 
+				" alert(\"Algo mal: \"+error);\n" + 
+				"});\n" + 
+				"</script>"+
 				"</body>" + 
 				"</html>";
 		response.getWriter().append(html);

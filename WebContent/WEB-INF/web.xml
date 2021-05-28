@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
+    <welcome-file>ListaAsignaturas</welcome-file>
     <welcome-file>index.htm</welcome-file>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>default.html</welcome-file>
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <servlet>
+    <servlet-name>Foto</servlet-name>
+    <servlet-class>Foto</servlet-class>
+    <init-param>
+      <param-name>carpeta</param-name>
+      <param-value>/home/user/eclipse-workspace/CentroEducativo/WebContent/fotos</param-value>
+    </init-param>
+  </servlet>
   <filter-mapping>
     <filter-name>Autenticacion</filter-name>
     <url-pattern>/*</url-pattern>

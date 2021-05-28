@@ -36,21 +36,33 @@ public class ListarAlumnosAsignatura extends HttpServlet {
 		String acronimo = request.getParameter("acronimo");
 		String res = " "+Interacciones.getAlumnosDeAsignatura(acronimo);
 		JSONArray jsonArray = new JSONArray(res);
-		String head = "<head><title>Asignaturas</title></head><body>";
+		String head = "<head><title>Asignaturas</title><script src='jquery-3.6.0.js'></script></head><body><div>";
 		String html = "";
+		String token = (String) (request.getSession().getAttribute("token"));
+		String cookie = (String) (request.getSession().getAttribute("cookie"));
 		for (int i = 0; i < jsonArray.length(); i++) {
 		    JSONObject asignatura = jsonArray.getJSONObject(i);
-		    html += "<div>"
-		    		+ "<div>"
+		    html += 
+		    		 "<div>"
 		    		+ "<p> Dni Alumno: "+asignatura.getString("alumno")+"</p>"
 		    		+ "</div>"
 		    		+ "<div>"
-		    		+ "<p> Nota: " + asignatura.getString("nota") + "</p>"
+		    		+ "<p> Nota: " + "</p>"
 		    		+ "</div>"
 		    		+ "<div>"
-		    		+ "<button>Modificar Nota</button>"
+		    		+ "<button onclick='cambiarNota()'>Modificar Nota</button>"
 		    		+ "</div>";
+		    		
 		}
+		html+= "</div>"
+				+ "<script>"
+	    		+ "function cambiarNota(){"
+	    		+ "$.getJSON('GetAlumnos?acronimo="+acronimo+"')"
+	    		+ ".done(function(data){"
+	    		+ ""
+	    		+ "})"
+	    		+ "}"
+	    		+ "</script>";
 		String full = head+html+"</body>";
 		response.getWriter().append(full);
 		

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ver Alumnos</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src='jquery-3.6.0.js'></script>
+</head>
+<body>
+ <div>
+     <img src="def.png">
+ </div>
+ <div class="text-center">
+ </div>
+    	 
+
+<script type="text/javascript">
+console.log("gola");
+
+ 	$.getJSON('GetAlumnos')
+		.done(function(data){
+			  var items = [];
+			  $.each(data, function(key, val) {
+			    items.push( "<div class='card col-sm-3' ><img id='"+key+"' width='250px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title'>DNI: "+val.alumno+"</h5><h5>Nota: "+val.nota+"</h5><button onclick='cambiarNota' class='btn btn-primary'>Cambiar Nota</button></div></div>");
+			    $.getJSON("Foto?dni="+val.alumno)
+			    	.done(function(res){
+			    		console.log(res);
+			    		$("#"+key).attr("src", "data:image/png;base64,"+res.img);
+			    	});
+			  });
+			 
+			  $( "<div/>", {
+			    "class": "row",
+			    html: items.join( "" )
+			  }).appendTo( ".text-center" );
+			console.log(data);
+		})
+</script>
+</body>
+</html>

@@ -172,9 +172,9 @@ public class ListaAsignaturas extends HttpServlet {
 		
 		}
 		else if(request.isUserInRole("rolpro")) {
-			String res = " "+getAsignaturas(token,cookie,(String)session.getAttribute("dni"),"profesores");
+			String res = " "+ Interacciones.getAsignaturasDeProfesor(dni);
 			JSONArray jsonArray = new JSONArray(res);
-			String head = "<head><title>Asignaturas</title></head><body>";
+			String head = "<head><script src='jquery-3.6.0.js'></script><title>Asignaturas</title></head><body>";
 			String html = "";
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
@@ -195,17 +195,45 @@ public class ListaAsignaturas extends HttpServlet {
 			    		+ "<p>Creditos "+asignatura.getDouble("creditos")+"</p>"
 			    		+ "</div>"
 			    		+ "<div>"
-			    		+ "<form action='ListarAlumnosAsignatura'>"
+			    		+ "<div>"
+			    		+ "<p>La nota media es: "+calcularNota(asignatura.getString("acronimo"))+"</p>"
+			    		+ "</div>"
+			    		+ "<form action='alumnos.html'>"
 			    		+ "<input type='hidden' name='acronimo' value='"+asignatura.getString("acronimo")+"'/>"
 			    		+ "<button>Ver alumnos</button>"
 			    		+ "</form>"
 			    		+ "</div>"
-			    		+ "</div>";	
+			    		+ "</div>"
+			    		+ "<script>"
+			    		+ "$.ajax({url : 'GetAlumnos',"
+			            +"data : {acronimo: '" +asignatura.getString("acronimo")+"'},"
+			            +"method : 'post'," 
+			            +"dataType : 'json',"
+			            +"success : function(response){"
+			            +"alert('funciona bien');"
+			            +"}"
+			            +"});"
+			            +"</script>";	
 			}
 			String full = head+html+"</body>";
-			//response.getWriter().append(full);
+			response.getWriter().append(full);
 			
 		}
+	}
+	
+	public double calcularNota(String acronimo) {
+		
+		String res = Interacciones.getAlumnosDeAsignatura(acronimo);
+		JSONArray jsonArray = new JSONArray(res);
+		double media = 0;
+		for(int i = 0; i < jsonArray.length();i++) {
+			JSONObject obj = jsonArray.getJSONObject(i);
+			String nota = obj.getString("nota");
+			if (nota.equals("") || nota.isEmpty()) media += 0;
+			else media+=1;
+		}
+		return media / jsonArray.length();
+		
 	}
 	
 	public String getAsignaturas(String token,String cookie,String user,String rol) {
