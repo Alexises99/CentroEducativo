@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
 /**
  * Servlet implementation class CambiarNota
  */
@@ -27,7 +29,7 @@ public class CambiarNota extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		doPost(request,response);
 	}
 
 	/**
@@ -35,10 +37,16 @@ public class CambiarNota extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String alumno = request.getParameter("alumno");
+		String alumno = request.getParameter("dni");
 		String acronimo = request.getParameter("acronimo");
 		String nota = request.getParameter("nota");
-		Interacciones.setNotaToAlumno(alumno, acronimo, nota);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		
+		String res = Interacciones.setNotaToAlumno(alumno, acronimo, nota,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+		JSONObject json = new JSONObject();
+		json.put("msg", res);
+		response.getWriter().append(json.toString());
 	}
 
 }

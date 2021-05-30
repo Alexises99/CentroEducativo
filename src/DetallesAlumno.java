@@ -34,8 +34,8 @@ public class DetallesAlumno extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		String dni = (String) session.getAttribute("dni");
 		
-		String alumno = Interacciones.getAlumnoDni(dni);
-		String asignaturas= " "+Interacciones.getAsignaturasDeAlumno(dni);
+		String alumno = Interacciones.getAlumnoDni(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+		String asignaturas= " "+Interacciones.getAsignaturasDeAlumno(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 		JSONObject Alumno = new JSONObject(alumno);
 		
 		
@@ -51,7 +51,7 @@ public class DetallesAlumno extends HttpServlet {
 				+ "</head>"
 				+ "<body>"
 				+ "<div>" + 
-				"        <img src=\"def.png\"  class=\"img-fluid\"/>" + 
+				"        <img src=\"banneredu.png\"  class=\"img-fluid\"/>" + 
 				"    </div>"+
 			    "<div class=\"mx-5 my-4\">" + 
 				"            <div class=\"text-center mx-5\">" + 
@@ -102,7 +102,7 @@ public class DetallesAlumno extends HttpServlet {
 		for (int i = 0; i < jsonArray.length(); i++) {
 		    JSONObject asignatura = jsonArray.getJSONObject(i);
 		    
-		    String s = Interacciones.getAsignaturasPorAcronimo(asignatura.getString("asignatura"));
+		    String s = Interacciones.getAsignaturasPorAcronimo(asignatura.getString("asignatura"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 		    JSONObject asignatura1 = new JSONObject(s);
 		    html += " <tr>" + 
 		    		" <th scope=\"row\">"+asignatura1.getString("acronimo")+"</th>" + 

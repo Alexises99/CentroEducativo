@@ -56,12 +56,9 @@ public class Autenticacion implements Filter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		HashMap<String,UsuarioFull> map = populate();
 		HttpSession session = request.getSession(true);
-		String token = "";
-		try {
-			token = (String) session.getAttribute("token");
-		} catch(Exception e) {
-			token = null;
-		}
+		
+		String token = (String) session.getAttribute("token");
+		
 		String cookie = "";
 		
 		if(token == null) {

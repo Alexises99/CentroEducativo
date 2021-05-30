@@ -7,20 +7,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
 /**
- * Servlet implementation class GetAlumnos
+ * Servlet implementation class getAsignatura
  */
-@WebServlet("/GetAlumnos")
-public class GetAlumnos extends HttpServlet {
+@WebServlet("/getAsignatura")
+public class GetAsignatura extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	String acronimo = "";
+	String acronimo = "mal";
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetAlumnos() {
+    public GetAsignatura() {
         super();
-        
         // TODO Auto-generated constructor stub
     }
 
@@ -29,10 +30,10 @@ public class GetAlumnos extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String alumnos = Interacciones.getAlumnosDeAsignatura(acronimo,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 		response.setContentType("application/json");
-		response.getWriter().append(alumnos);
-		
+		JSONObject json = new JSONObject();
+		json.put("acronimo", acronimo);
+		response.getWriter().append(json.toString());
 	}
 
 	/**

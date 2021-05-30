@@ -34,7 +34,7 @@ public class ListarAlumnosAsignatura extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String acronimo = request.getParameter("acronimo");
-		String res = " "+Interacciones.getAlumnosDeAsignatura(acronimo);
+		String res = " "+Interacciones.getAlumnosDeAsignatura(acronimo,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 		JSONArray jsonArray = new JSONArray(res);
 		String head = "<head><title>Asignaturas</title><script src='jquery-3.6.0.js'></script></head><body><div>";
 		String html = "";

@@ -9,33 +9,70 @@
 </head>
 <body>
  <div>
-     <img src="def.png">
+     <img src="banneredu.png">
  </div>
- <div class="text-center">
+ <div class="text-center h3 text-dark">Lista Asignaturas</div>
+ <div class="text">
  </div>
     	 
 
 <script type="text/javascript">
-console.log("gola");
+	let acronimo ="";
+	$.getJSON("getAsignatura")
+	.done(function(res){
+		$( "<div/>", {
+		    "id": "noshow",
+		    html: res.acronimo
+		  }).appendTo("body");
+		$("#noshow").hide();
+	});
 
+
+var alumnos = {};
  	$.getJSON('GetAlumnos')
 		.done(function(data){
 			  var items = [];
 			  $.each(data, function(key, val) {
-			    items.push( "<div class='card col-sm-3' ><img id='"+key+"' width='250px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title'>DNI: "+val.alumno+"</h5><h5>Nota: "+val.nota+"</h5><button onclick='cambiarNota' class='btn btn-primary'>Cambiar Nota</button></div></div>");
+				alumnos[key] = val;
+			    items.push( "<div class='card col-sm-3 mx-3 my-3 p-2 border border-dark border-2 rounded'><img id='"+val.alumno+"' width='250px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title'>DNI: "+val.alumno+"</h4><h5 id='h5"+key+"'>Nota: "+val.nota+"</h5><button id='"+key+"' onclick='cambiarNota(this)' class='btn btn-primary'>Cambiar Nota</button></div></div>");
 			    $.getJSON("Foto?dni="+val.alumno)
 			    	.done(function(res){
-			    		console.log(res);
-			    		$("#"+key).attr("src", "data:image/png;base64,"+res.img);
+			    		$("#"+val.alumno).attr("src", "data:image/png;base64,"+res.img);
 			    	});
 			  });
 			 
 			  $( "<div/>", {
 			    "class": "row",
 			    html: items.join( "" )
-			  }).appendTo( ".text-center" );
-			console.log(data);
-		})
+			  }).appendTo(".text");
+		});
+	
+		function cambiarNota(event){
+ 			let nota = prompt("Por favor, introduce la nota");
+ 			let text;
+ 			if(nota < 0 || nota > 10 || nota == null || nota == ""){
+ 				alert("Valor incorrecto");
+ 				return;
+ 			}
+ 			
+ 			let datos = {
+ 					dni: alumnos[event.id].alumno,
+ 					acronimo: $("#noshow").html(),
+ 					nota: nota,
+ 			};
+ 			console.log(datos);
+ 			
+ 			$.ajax({
+ 				url: 'CambiarNota',
+ 				method: "post",
+ 				dataType: "json",
+ 				data: datos,
+ 				success: function(res) {
+ 					console.log(res);
+ 					$('#h5'+event.id).text("Nota: "+ nota);
+ 				}
+ 			});
+ 		}
 </script>
 </body>
 </html>

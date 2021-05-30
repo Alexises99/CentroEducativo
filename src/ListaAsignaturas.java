@@ -58,7 +58,7 @@ public class ListaAsignaturas extends HttpServlet {
 		
 		
 		if(request.isUserInRole("rolalu")) {
-			String res = " "+Interacciones.getAsignaturasDeAlumno(dni);
+			String res = " "+Interacciones.getAsignaturasDeAlumno(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 			JSONArray jsonArray = new JSONArray(res);
 			String html = "<!DOCTYPE html>" + 
 					"<html lang=\"en\">" + 
@@ -72,8 +72,19 @@ public class ListaAsignaturas extends HttpServlet {
 					"    <title>Ver Asignaturas</title>" + 
 					"</head>" + 
 					"<body>" + 
-					"  <div>" + 
-					"        <img src=\"def.png\"  class=\"img-fluid\"/>" + 
+					"  <ul class=\"nav nav-pills bg-primary \">\n" + 
+					"        \n" + 
+					"        <li class=\"nav-item dropdown\">\n" + 
+					"          <a class=\"nav-link dropdown-toggle text-light\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Asignaturas</a>\n" + 
+					"          <div class=\"dropdown-menu\">\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"          </div>\n" + 
+					"      </ul>"
+					+ "<div>" + 
+					"        <img src=\"banneredu.png\"  class=\"img-fluid\"/>" + 
 					"    </div>"+
 					"    <div class=\"container mt-3\">" + 
 					"        <div class=\"row\">" + 
@@ -98,8 +109,26 @@ public class ListaAsignaturas extends HttpServlet {
 					"                </ul>" + 
 					"              </div>" + 
 					"              <div class=\"card-body\">" + 
-					"                <h4 class=\"card-title text-center\">"+dni+"</h4>" + 
-					"                <h6 class=\"card-subtitle mb-2 text-center\">Nombre Alumno</h6>" +  
+					"                <div class=\"d-flex  justify-content-around flex-column\">\n" + 
+					"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+					"                    <div class=\"d-flex\">\n" + 
+					"                        <div class=\"p-2 h4 text-primary '\">DNI: </div>\n" + 
+					"                        <div class=\"p-2 h4\">"+dni+"</div>\n" + 
+					"                    </div>\n" + 
+					"                    \n" + 
+					"                    \n" + 
+					"                  </div>\n" + 
+					"              </div>" + 
+					"                <div class=\"d-flex  justify-content-around flex-column\">\n" + 
+					"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+					"                    <div class=\"d-flex\">\n" + 
+					"                        <div class=\"p-2 h5 text-primary '\">Nombre: </div>\n" + 
+					"                        <div class=\"p-2 h5\">NombreAlumno</div>\n" + 
+					"                    </div>\n" + 
+					"                    \n" + 
+					"                    \n" + 
+					"                  </div>\n" + 
+					"              </div>" +  
 					"                <div class=\"tab-content mt-3\">";
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
@@ -108,12 +137,29 @@ public class ListaAsignaturas extends HttpServlet {
 							"                  <div class=\"tab-pane active\" id=\"description"+i+"\" role=\"tabpanel\" aria-labelledby=\"description"+i+"-tab\">" + 
 							"                    <div class=\"row\">" + 
 							"                        <div class=\"col-md-6\">" + 
-							"                            <div class=\"h5\">Acronimo: "+asignatura.getString("asignatura")+"</div>" + 
-							"                            <div class=\"h5\">Asignatura: "+asignatura.getString("asignatura")+"</div>" + 
-							"                            <div class=\"h5\">Nota: "+asignatura.getString("nota")+"</div>" +
+							"							<div class=\"d-flex  justify-content-around flex-column\">\n" + 
+							"                				<div class=\"d-flex justify-content-around flex-row\">\n" + 
+							"                    				<div class=\"d-flex\">\n" + 
+							"                        				<div class=\"p-2 text-primary\">Acronimo</div>\n" + 
+							"                        				<div class=\"p-2\">"+asignatura.getString("asignatura")+"</div>\n" + 
+							"                    				</div>"
+							+ "								</div>"
+							+ "							</div>"+
+							"<div class=\"d-flex  justify-content-around flex-column\">\n" + 
+							"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+							"                    <div class=\"d-flex\">\n" + 
+							"                        <div class=\"p-2 text-primary\">Acronimo</div>\n" + 
+							"                        <div class=\"p-2 \">"+asignatura.getString("asignatura")+"</div>\n" + 
+							"                    </div></div></div>"+
+							"<div class=\"d-flex  justify-content-around flex-column\">\n" + 
+							"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+							"                    <div class=\"d-flex\">\n" + 
+							"                        <div class=\"p-2 text-primary\">Nota</div>\n" + 
+							"                        <div class=\"p-2 text-danger\">"+asignatura.getString("nota")+"</div>\n" + 
+							"                    </div></div></div>"+
 							"                        </div>" + 
 							"                        <div class=\"col-md-6\">" + 
-							"                            <div class=\"h4\">Alumnos</div>" + 
+							"                            <div class=\"h4 text-primary\">Alumnos</div>" + 
 							"                        <ul class=\"list-group\">";
 			    }
 			    else {
@@ -122,20 +168,47 @@ public class ListaAsignaturas extends HttpServlet {
 					"                  <div class=\"tab-pane\" id=\"description"+i+"\" role=\"tabpanel\" aria-labelledby=\"description"+i+"-tab\">" + 
 					"                    <div class=\"row\">" + 
 					"                        <div class=\"col-md-6\">" + 
-					"                            <div class=\"h5\">Acronimo: "+asignatura.getString("asignatura")+"</div>" + 
-					"                            <div class=\"h5\">Asignatura: "+asignatura.getString("asignatura")+"</div>" + 
-					"                            <div class=\"h5\">Nota: "+asignatura.getString("nota")+"</div>" + 
+					" <div class=\"d-flex  justify-content-around flex-column\">\n" + 
+					"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+					"                    <div class=\"d-flex\">\n" + 
+					"                        <div class=\"p-2 text-primary '\">Asignatura</div>\n" + 
+					"                        <div class=\"p-2\">"+asignatura.getString("asignatura")+"</div>\n" + 
+					"                    </div>\n" + 
+					"                    \n" + 
+					"                    \n" + 
+					"                  </div>\n" + 
+					"              </div>"+
+					" <div class=\"d-flex  justify-content-around flex-column\">\n" + 
+					"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+					"                    <div class=\"d-flex\">\n" + 
+					"                        <div class=\"p-2 text-primary '\">Acronimo</div>\n" + 
+					"                        <div class=\"p-2\">"+asignatura.getString("asignatura")+"</div>\n" + 
+					"                    </div>\n" + 
+					"                    \n" + 
+					"                    \n" + 
+					"                  </div>\n" + 
+					"              </div>"+
+					" <div class=\"d-flex  justify-content-around flex-column\">\n" + 
+					"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+					"                    <div class=\"d-flex\">\n" + 
+					"                        <div class=\"p-2 text-primary '\">Nota</div>\n" + 
+					"                        <div class=\"p-2 text-danger\">"+asignatura.getString("nota")+"</div>\n" + 
+					"                    </div>\n" + 
+					"                    \n" + 
+					"                    \n" + 
+					"                  </div>\n" + 
+					"              </div>"+
 					"                        </div>" + 
 					"                        <div class=\"col-md-6\">" + 
-					"                            <div class=\"h4\">Alumnos</div>" + 
+					"                            <div class=\"h4 text-primary\">Alumnos</div>" + 
 					"                        <ul class=\"list-group\">";
 			    }
-					String r = " "+Interacciones.getAlumnosDeAsignatura(asignatura.getString("asignatura"));
+					String r = " "+Interacciones.getAlumnosDeAsignatura(asignatura.getString("asignatura"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 					JSONArray jsonArray2 = new JSONArray(r);
 					
 					for(int j = 0; j < jsonArray2.length();j++) {
 						JSONObject alum = jsonArray2.getJSONObject(j);
-						html += "<li class=\"list-group-item\">"+alum.getString("alumno")+"</li>";
+						html += "<li class=\"list-group-item bg-dark text-light\">"+alum.getString("alumno")+"</li>";
 					}
 					html +=                          
 							"                          </ul>" + 
@@ -172,38 +245,71 @@ public class ListaAsignaturas extends HttpServlet {
 		
 		}
 		else if(request.isUserInRole("rolpro")) {
-			String res = " "+ Interacciones.getAsignaturasDeProfesor(dni);
+			String res = " "+ Interacciones.getAsignaturasDeProfesor(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 			JSONArray jsonArray = new JSONArray(res);
-			String head = "<head><script src='jquery-3.6.0.js'></script><title>Asignaturas</title></head><body>";
-			String html = "";
+			String head = "<head> <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x\" crossorigin=\"anonymous\">\n" + 
+					"        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4\" crossorigin=\"anonymous\"></script><script src='jquery-3.6.0.js'></script><title>Asignaturas</title></head><body>";
+			String html = " <ul class=\"nav nav-pills bg-primary \">\n" + 
+					"        \n" + 
+					"        <li class=\"nav-item dropdown\">\n" + 
+					"          <a class=\"nav-link dropdown-toggle text-light\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Asignaturas</a>\n" + 
+					"          <div class=\"dropdown-menu\">\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"            <a class=\"dropdown-item\" href=\"#\">Asignaturas</a>\n" + 
+					"          </div>\n" + 
+					"      </ul>"
+					+ "<div>"
+					+ "<img src='banneredu.png' class='img-fluid'/></div>";
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
-			    html += "<div>"
-			    		+ "<div>"
-			    		+ "<p>Nombre: "+asignatura.getString("nombre")+"</p>"
-			    		+ "</div>"
-			    		+ "<div>"
-			    		+ "<p>Acronimo: "+asignatura.getString("acronimo")+"</p>"
-			    		+ "</div>"
-			    		+ "<div>"
-			    		+ "<p>Curso "+asignatura.getInt("curso")+"</p>"
-			    		+ "</div>"
-			    		+ "<div>"
-			    		+ "<p>Cuatrimestre "+asignatura.getString("cuatrimestre") +"</p>"
-			    		+ "</div>"
-			    		+ "<div>"
-			    		+ "<p>Creditos "+asignatura.getDouble("creditos")+"</p>"
-			    		+ "</div>"
-			    		+ "<div>"
-			    		+ "<div>"
-			    		+ "<p>La nota media es: "+calcularNota(asignatura.getString("acronimo"))+"</p>"
-			    		+ "</div>"
-			    		+ "<form action='alumnos.html'>"
-			    		+ "<input type='hidden' name='acronimo' value='"+asignatura.getString("acronimo")+"'/>"
-			    		+ "<button>Ver alumnos</button>"
-			    		+ "</form>"
-			    		+ "</div>"
-			    		+ "</div>"
+			    html += "<div class='text-center text-dark h3'>Lista de asignaturas</div>"
+			    		+ "<div class=\"container my-3\">\n" + 
+			    		"        <div class=\"container m-auto bg-primary border border-2 border-dark rounded\">\n" + 
+			    		"            <div class=\"d-flex justify-content-around flex-column\">\n" + 
+			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+			    		"                    <div class=\"d-flex\">\n" + 
+			    		"                        <div class=\"p-2 text-dark '\">Nombre</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">"+asignatura.getString("acronimo")+"</div>\n" + 
+			    		"                    </div>\n" + 
+			    		"                    \n" + 
+			    		"                    <div class=\"d-flex\">\n" + 
+			    		"                        <div class=\"p-2 text-dark '\">Acronimo</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">"+asignatura.getString("acronimo")+"</div>\n" + 
+			    		"                    </div>\n" + 
+			    		"                  </div>\n" + 
+			    		"              </div>\n" + 
+			    		"              <div class=\"d-flex  justify-content-around flex-column\">\n" + 
+			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+			    		"                    <div class=\"d-flex\">\n" + 
+			    		"                        <div class=\"p-2 text-dark '\">Creditos</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">6</div>\n" + 
+			    		"                    </div>\n" + 
+			    		"                    \n" + 
+			    		"                    <div class=\"d-flex\">\n" + 
+			    		"                        <div class=\"p-2 text-dark '\">Curso</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">3B</div>\n" + 
+			    		"                    </div>\n" + 
+			    		"                  </div>\n" + 
+			    		"              </div>\n" + 
+			    		"              <div class=\"d-flex justify-content-around flex-column p-2\">\n" + 
+			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
+			    		"                    <div class=\"d-flex\">\n" + 
+			    		"                        <div class=\"p-2 text-dark '\">Nota Media</div>\n" + 
+			    		"                        <div class=\"p-2 text-danger\">"+calcularNota(asignatura.getString("acronimo"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"))+"</div>\n" + 
+			    		"                    </div>\n" + 
+			    		"                    <div class=\"d-flex\">\n" + 
+			    		"					<form action='alumnos.html'>"+
+			    		"                        <button class=\"btn btn-info\">Ver Alumnos</button>\n" + 
+			    		"					</form>"+
+			    		"                    </div>\n" + 
+			    		"                  </div>\n" + 
+			    		"              </div>\n" + 
+			    		"              </div>\n" + 
+			    		"        </div>\n" + 
+			    		"       \n" + 
+			    		"    </div>"
 			    		+ "<script>"
 			    		+ "$.ajax({url : 'GetAlumnos',"
 			            +"data : {acronimo: '" +asignatura.getString("acronimo")+"'},"
@@ -213,6 +319,14 @@ public class ListaAsignaturas extends HttpServlet {
 			            +"alert('funciona bien');"
 			            +"}"
 			            +"});"
+			            + "$.ajax({url : 'getAsignatura',"
+					            +"data : {acronimo: '" +asignatura.getString("acronimo")+"'},"
+					            +"method : 'post'," 
+					            +"dataType : 'json',"
+					            +"success : function(response){"
+					            +"alert('funciona bien');"
+					            +"}"
+					            +"});"
 			            +"</script>";	
 			}
 			String full = head+html+"</body>";
@@ -221,16 +335,15 @@ public class ListaAsignaturas extends HttpServlet {
 		}
 	}
 	
-	public double calcularNota(String acronimo) {
-		
-		String res = Interacciones.getAlumnosDeAsignatura(acronimo);
+	public double calcularNota(String acronimo,String token,String cookie) {
+		String res = Interacciones.getAlumnosDeAsignatura(acronimo,token,cookie);
 		JSONArray jsonArray = new JSONArray(res);
 		double media = 0;
 		for(int i = 0; i < jsonArray.length();i++) {
 			JSONObject obj = jsonArray.getJSONObject(i);
 			String nota = obj.getString("nota");
 			if (nota.equals("") || nota.isEmpty()) media += 0;
-			else media+=1;
+			else media+=Double.parseDouble(nota);
 		}
 		return media / jsonArray.length();
 		
