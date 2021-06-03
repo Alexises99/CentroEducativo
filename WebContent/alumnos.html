@@ -11,7 +11,7 @@
  <div>
      <img src="banneredu.png">
  </div>
- <div class="text-center h3 text-dark">Lista Asignaturas</div>
+ <div class="text-center h3 text-dark">Lista Alumnos</div>
  <div class="text">
  </div>
     	 
@@ -32,12 +32,13 @@ var alumnos = {};
  	$.getJSON('GetAlumnos')
 		.done(function(data){
 			  var items = [];
+			  console.log(data);
 			  $.each(data, function(key, val) {
 				alumnos[key] = val;
-			    items.push( "<div class='card col-sm-3 mx-3 my-3 p-2 border border-dark border-2 rounded'><img id='"+val.alumno+"' width='250px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title'>DNI: "+val.alumno+"</h4><h5 id='h5"+key+"'>Nota: "+val.nota+"</h5><button id='"+key+"' onclick='cambiarNota(this)' class='btn btn-primary'>Cambiar Nota</button></div></div>");
-			    $.getJSON("Foto?dni="+val.alumno)
+			    items.push( "<div class='card col-sm-3 mx-3 my-3 p-2 border border-dark border-2 rounded'><img id='"+val.dni+"' width='250px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title'>DNI: "+val.dni+"</h4><h4>Nombre: "+val.nombre+"</h4><h5>Apellidos: "+val.apellidos+"</h5><h5 id='h5"+key+"'>Nota: "+val.nota+"</h5><button id='"+key+"' onclick='cambiarNota(this)' class='btn btn-primary'>Cambiar Nota</button></div></div>");
+			    $.getJSON("Foto?dni="+val.dni)
 			    	.done(function(res){
-			    		$("#"+val.alumno).attr("src", "data:image/png;base64,"+res.img);
+			    		$("#"+val.dni).attr("src", "data:image/png;base64,"+res.img);
 			    	});
 			  });
 			 
@@ -45,6 +46,7 @@ var alumnos = {};
 			    "class": "row",
 			    html: items.join( "" )
 			  }).appendTo(".text");
+			  console.log(alumnos);
 		});
 	
 		function cambiarNota(event){

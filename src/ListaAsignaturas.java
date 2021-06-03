@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -58,10 +59,10 @@ public class ListaAsignaturas extends HttpServlet {
 		
 		
 		if(request.isUserInRole("rolalu")) {
-			String res = " "+Interacciones.getAsignaturasDeAlumno(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+			String res = Interacciones.getAsignaturasDeAlumno(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 			JSONArray jsonArray = new JSONArray(res);
 			String html = "<!DOCTYPE html>" + 
-					"<html lang=\"en\">" + 
+					"<html lang=\"es\">" + 
 					"<head>" + 
 					"    <meta charset=\"UTF-8\">" + 
 					"    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" + 
@@ -133,6 +134,13 @@ public class ListaAsignaturas extends HttpServlet {
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
 			    if(i == 0) {
+			    	String not = "";
+			    	if(asignatura.getString("nota").equals("") ) {
+			    		not = "Sin calificar";
+			    	}
+			    	else {
+			    		not = asignatura.getString("nota");
+			    	}
 			    	html +=
 							"                  <div class=\"tab-pane active\" id=\"description"+i+"\" role=\"tabpanel\" aria-labelledby=\"description"+i+"-tab\">" + 
 							"                    <div class=\"row\">" + 
@@ -155,7 +163,7 @@ public class ListaAsignaturas extends HttpServlet {
 							"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
 							"                    <div class=\"d-flex\">\n" + 
 							"                        <div class=\"p-2 text-primary\">Nota</div>\n" + 
-							"                        <div class=\"p-2 text-danger\">"+asignatura.getString("nota")+"</div>\n" + 
+							"                        <div class=\"p-2 text-danger\">"+not+"</div>\n" + 
 							"                    </div></div></div>"+
 							"                        </div>" + 
 							"                        <div class=\"col-md-6\">" + 
@@ -163,6 +171,13 @@ public class ListaAsignaturas extends HttpServlet {
 							"                        <ul class=\"list-group\">";
 			    }
 			    else {
+			    	String not = "";
+			    	if(asignatura.getString("nota").equals("") ) {
+			    		not = "Sin calificar";
+			    	}
+			    	else {
+			    		not = asignatura.getString("nota");
+			    	}
 			    	html +=
 			    
 					"                  <div class=\"tab-pane\" id=\"description"+i+"\" role=\"tabpanel\" aria-labelledby=\"description"+i+"-tab\">" + 
@@ -192,7 +207,7 @@ public class ListaAsignaturas extends HttpServlet {
 					"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
 					"                    <div class=\"d-flex\">\n" + 
 					"                        <div class=\"p-2 text-primary '\">Nota</div>\n" + 
-					"                        <div class=\"p-2 text-danger\">"+asignatura.getString("nota")+"</div>\n" + 
+					"                        <div class=\"p-2 text-danger\">"+not+"</div>\n" + 
 					"                    </div>\n" + 
 					"                    \n" + 
 					"                    \n" + 
@@ -203,7 +218,8 @@ public class ListaAsignaturas extends HttpServlet {
 					"                            <div class=\"h4 text-primary\">Alumnos</div>" + 
 					"                        <ul class=\"list-group\">";
 			    }
-					String r = " "+Interacciones.getAlumnosDeAsignatura(asignatura.getString("asignatura"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+			    String v[]=Interacciones.login("111111111", "654321");
+			     String r = Interacciones.getAlumnosDeAsignatura(asignatura.getString("asignatura"),v[0],v[1]);
 					JSONArray jsonArray2 = new JSONArray(r);
 					
 					for(int j = 0; j < jsonArray2.length();j++) {
@@ -238,10 +254,14 @@ public class ListaAsignaturas extends HttpServlet {
 					"})"+
 					"</script>"+
 					"</body>"+
+					"<footer>Pagina para un trabajo de la asignatura DEW</footer>"+
 					"</html>"
 					;
-			
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
 			response.getWriter().append(html);
+			response.getWriter().flush();
+			response.getWriter().close();
 		
 		}
 		else if(request.isUserInRole("rolpro")) {
@@ -264,6 +284,8 @@ public class ListaAsignaturas extends HttpServlet {
 					+ "<img src='banneredu.png' class='img-fluid'/></div>";
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
+			    String asig = Interacciones.getAsignaturasPorAcronimo(asignatura.getString("acronimo"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+			    JSONObject json = new JSONObject(asig);
 			    html += "<div class='text-center text-dark h3'>Lista de asignaturas</div>"
 			    		+ "<div class=\"container my-3\">\n" + 
 			    		"        <div class=\"container m-auto bg-primary border border-2 border-dark rounded\">\n" + 
@@ -271,12 +293,12 @@ public class ListaAsignaturas extends HttpServlet {
 			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
 			    		"                        <div class=\"p-2 text-dark '\">Nombre</div>\n" + 
-			    		"                        <div class=\"p-2 text-light\">"+asignatura.getString("acronimo")+"</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">"+json.getString("nombre")+"</div>\n" + 
 			    		"                    </div>\n" + 
 			    		"                    \n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
 			    		"                        <div class=\"p-2 text-dark '\">Acronimo</div>\n" + 
-			    		"                        <div class=\"p-2 text-light\">"+asignatura.getString("acronimo")+"</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">"+json.getString("acronimo")+"</div>\n" + 
 			    		"                    </div>\n" + 
 			    		"                  </div>\n" + 
 			    		"              </div>\n" + 
@@ -284,12 +306,12 @@ public class ListaAsignaturas extends HttpServlet {
 			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
 			    		"                        <div class=\"p-2 text-dark '\">Creditos</div>\n" + 
-			    		"                        <div class=\"p-2 text-light\">6</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">"+json.getDouble("creditos")+"</div>\n" + 
 			    		"                    </div>\n" + 
 			    		"                    \n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
-			    		"                        <div class=\"p-2 text-dark '\">Curso</div>\n" + 
-			    		"                        <div class=\"p-2 text-light\">3B</div>\n" + 
+			    		"                        <div class=\"p-2 text-dark '\">Curso y Cuatrimestre</div>\n" + 
+			    		"                        <div class=\"p-2 text-light\">"+json.getInt("curso")+ " " + json.getString("cuatrimestre")+"</div>\n" + 
 			    		"                    </div>\n" + 
 			    		"                  </div>\n" + 
 			    		"              </div>\n" + 
@@ -300,7 +322,7 @@ public class ListaAsignaturas extends HttpServlet {
 			    		"                        <div class=\"p-2 text-danger\">"+calcularNota(asignatura.getString("acronimo"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"))+"</div>\n" + 
 			    		"                    </div>\n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
-			    		"					<form action='alumnos.html'>"+
+			    		"					<form action='profesor.html'>"+
 			    		"                        <button class=\"btn btn-info\">Ver Alumnos</button>\n" + 
 			    		"					</form>"+
 			    		"                    </div>\n" + 
@@ -329,8 +351,12 @@ public class ListaAsignaturas extends HttpServlet {
 					            +"});"
 			            +"</script>";	
 			}
-			String full = head+html+"</body>";
+			String full = head+html+"<footer>Pagina para un trabajo de la asignatura DEW</footer></body>";
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
 			response.getWriter().append(full);
+			response.getWriter().flush();
+			response.getWriter().close();
 			
 		}
 	}

@@ -7,20 +7,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
-
 /**
- * Servlet implementation class getAsignatura
+ * Servlet implementation class GetProfs
  */
-@WebServlet("/getAsignatura")
-public class GetAsignatura extends HttpServlet {
+@WebServlet("/GetProfs")
+public class GetProfs extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	String acronimo = "mal";
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetAsignatura() {
+    public GetProfs() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,10 +26,7 @@ public class GetAsignatura extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.setContentType("application/json");
-		String res = Interacciones.getAsignaturasPorAcronimo(acronimo, (String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
-		response.getWriter().append(res);
+		
 	}
 
 	/**
@@ -40,8 +34,11 @@ public class GetAsignatura extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String acronimo = request.getParameter("acronimo");
-		this.acronimo = acronimo;
+		String asig = request.getParameter("acronimo");
+		String res = Interacciones.getProfesoresDeAsignaturas(asig, (String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().append(res);
 	}
 
 }

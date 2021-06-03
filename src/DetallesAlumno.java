@@ -1,6 +1,9 @@
 
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,7 +42,7 @@ public class DetallesAlumno extends HttpServlet {
 		JSONObject Alumno = new JSONObject(alumno);
 		
 		
-		String html = "<html>"
+		String html = "<html lang='es'>"
 				+ "<head>"
 				+ "<meta charset='UTF-8'>" + 
 				"  <meta http-equiv='X-UA-Compatible' content='IE=edge'>" + 
@@ -110,11 +113,13 @@ public class DetallesAlumno extends HttpServlet {
 		    		" <td>"+asignatura.getString("nota")+"</td>" + 
 		    		" </tr>";
 		}
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now(); 
 		html+= " </tbody>" + 
 				"</table>" +
 				"</div>" + 
 				"<div class=\"text-center\">" + 
-				"  Valencia" + 
+				"  Valencia a"+ dtf.format(now) +
 				"</div>" +
 				"</div>" +
 				"<script>"+
@@ -129,6 +134,7 @@ public class DetallesAlumno extends HttpServlet {
 				"});\n" + 
 				"</script>"+
 				"</body>" + 
+				"<footer>Pagina para un trabajo de la asignatura DEW</footer>"+
 				"</html>";
 		response.getWriter().append(html);
 				

@@ -40,12 +40,22 @@ public class CambiarNota extends HttpServlet {
 		String alumno = request.getParameter("dni");
 		String acronimo = request.getParameter("acronimo");
 		String nota = request.getParameter("nota");
+		double nota1 = Double.parseDouble(nota);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		if(nota1  > 10.0 || nota1 < 0.0) {
+			JSONObject j = new JSONObject();
+			j.put("error", "nota invalida");
+			response.setStatus(400);
+			response.getWriter().append(j.toString());
+			
+		}
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		
 		String res = Interacciones.setNotaToAlumno(alumno, acronimo, nota,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 		JSONObject json = new JSONObject();
-		json.put("msg", res);
+		json.put("msg", alumno+acronimo+nota);
 		response.getWriter().append(json.toString());
 	}
 

@@ -11,19 +11,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Servlet implementation class GetAlumnos
+ * Servlet implementation class GetAsigProf
  */
-@WebServlet("/GetAlumnos")
-public class GetAlumnos extends HttpServlet {
+@WebServlet("/GetAsigProf")
+public class GetAsigProf extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	String acronimo = "";
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetAlumnos() {
+    public GetAsigProf() {
         super();
-        
         // TODO Auto-generated constructor stub
     }
 
@@ -32,19 +30,20 @@ public class GetAlumnos extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String alumnos = Interacciones.getAlumnosDeAsignatura(acronimo,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
-		JSONArray alumns = new JSONArray(alumnos);
-		JSONArray json = new JSONArray();
-		for(int i = 0; i < alumns.length(); i++) {
-			JSONObject al = alumns.getJSONObject(i);
-			String res = Interacciones.getAlumnoDni(al.getString("alumno"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
-			JSONObject hola = new JSONObject(res);
-			hola.put("nota", al.getString("nota"));
-			json.put(hola);
-		}
+		String res = Interacciones.getAsignaturasDeProfesor((String) request.getSession().getAttribute("dni"), (String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
-		response.getWriter().append(json.toString());
+		JSONArray j = new JSONArray(res);
+		JSONObject json = new JSONObject();
+		JSONArray def = new JSONArray();
+		for(int i = 0; i < j.length(); i++) {
+			JSONObject asig = j.getJSONObject(i);
+			json.put("acronimo", asig.getString("acronimo"));
+			
+		}
+		def.put(json);
 		
+		response.getWriter().append(def.toString());
 	}
 
 	/**
@@ -52,8 +51,7 @@ public class GetAlumnos extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String acronimo = request.getParameter("acronimo");
-		this.acronimo = acronimo;
+		doGet(request, response);
 	}
 
 }

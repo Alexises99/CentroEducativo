@@ -11,19 +11,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Servlet implementation class GetAlumnos
+ * Servlet implementation class NotaMedia
  */
-@WebServlet("/GetAlumnos")
-public class GetAlumnos extends HttpServlet {
+@WebServlet("/NotaMedia")
+public class NotaMedia extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	String acronimo = "";
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetAlumnos() {
+    public NotaMedia() {
         super();
-        
         // TODO Auto-generated constructor stub
     }
 
@@ -31,19 +29,9 @@ public class GetAlumnos extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		
 		// TODO Auto-generated method stub
-		String alumnos = Interacciones.getAlumnosDeAsignatura(acronimo,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
-		JSONArray alumns = new JSONArray(alumnos);
-		JSONArray json = new JSONArray();
-		for(int i = 0; i < alumns.length(); i++) {
-			JSONObject al = alumns.getJSONObject(i);
-			String res = Interacciones.getAlumnoDni(al.getString("alumno"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
-			JSONObject hola = new JSONObject(res);
-			hola.put("nota", al.getString("nota"));
-			json.put(hola);
-		}
-		response.setContentType("application/json");
-		response.getWriter().append(json.toString());
 		
 	}
 
@@ -53,7 +41,20 @@ public class GetAlumnos extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String acronimo = request.getParameter("acronimo");
-		this.acronimo = acronimo;
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+		String res = Interacciones.getAlumnosDeAsignatura(acronimo,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+		JSONArray jsonArray = new JSONArray(res);
+		double media = 0;
+		for(int i = 0; i < jsonArray.length();i++) {
+			JSONObject obj = jsonArray.getJSONObject(i);
+			String nota = obj.getString("nota");
+			if (nota.equals("") || nota.isEmpty()) media += 0;
+			else media+=Double.parseDouble(nota);
+		}
+		JSONObject json = new JSONObject();
+		json.put("media", media/ jsonArray.length());
+		response.getWriter().append(json.toString());
 	}
 
 }

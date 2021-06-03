@@ -19,7 +19,7 @@ import com.squareup.okhttp.Response;
 public class Interacciones {
 	
 	private final static OkHttpClient client = new OkHttpClient();
-	private final static String site = "localhost";
+	private final static String site = "dew-alsanme1-2021.dsic.cloud";
 	
 	private static String get(String token,String cookie,String url) {
 		HttpUrl.Builder urlBuilder 
@@ -71,7 +71,7 @@ public class Interacciones {
 	}
 
 	public static String getAlumnosDeAsignatura(String acronimo,String token,String cookie) {
-		String url = "http://"+site+":9090/CentroEducativo/asignaturas/"+acronimo+"/alumnos";
+		String url = "http://localhost:9090/CentroEducativo/asignaturas/"+acronimo+"/alumnos";
 		return get(token,cookie,url);
 	}
 	
@@ -86,7 +86,7 @@ public class Interacciones {
 	}
 	
 	public static String getProfesoresDeAsignaturas(String acronimo,String token,String cookie) {
-		String url = "http://"+site+":9090/CentroEducativo/"+acronimo+"/asignaturas";
+		String url = "http://"+site+":9090/CentroEducativo/asignaturas/"+acronimo+"/profesores";
 		return get(token,cookie,url);
 	}
 	
