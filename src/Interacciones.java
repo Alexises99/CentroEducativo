@@ -19,7 +19,7 @@ import com.squareup.okhttp.Response;
 public class Interacciones {
 	
 	private final static OkHttpClient client = new OkHttpClient();
-	private final static String site = "dew-alsanme1-2021.dsic.cloud";
+	private final static String site = "localhost";
 	
 	private static String get(String token,String cookie,String url) {
 		HttpUrl.Builder urlBuilder 

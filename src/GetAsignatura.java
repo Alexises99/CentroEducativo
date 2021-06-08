@@ -40,8 +40,12 @@ public class GetAsignatura extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		/**String acronimo = request.getParameter("acronimo");
+		this.acronimo = acronimo;*/
 		String acronimo = request.getParameter("acronimo");
-		this.acronimo = acronimo;
+		response.setContentType("application/json");
+		String res = Interacciones.getAsignaturasPorAcronimo(acronimo, (String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
+		response.getWriter().append(res);
 	}
 
 }

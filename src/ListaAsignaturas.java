@@ -2,6 +2,8 @@
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -265,10 +267,17 @@ public class ListaAsignaturas extends HttpServlet {
 		
 		}
 		else if(request.isUserInRole("rolpro")) {
+			NumberFormat formatter = new DecimalFormat("#0.00"); 
 			String res = " "+ Interacciones.getAsignaturasDeProfesor(dni,(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 			JSONArray jsonArray = new JSONArray(res);
-			String head = "<head> <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x\" crossorigin=\"anonymous\">\n" + 
-					"        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4\" crossorigin=\"anonymous\"></script><script src='jquery-3.6.0.js'></script><title>Asignaturas</title></head><body>";
+			String head = "<head> "
+					+ "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x\" crossorigin=\"anonymous\">"
+					+ "\n" + 
+					"        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4\" crossorigin=\"anonymous\">"
+					+ "</script>"
+					+ "<script src='jquery-3.6.0.js'></script>"
+					+ ""
+					+ "<title>Asignaturas</title></head><body>";
 			String html = " <ul class=\"nav nav-pills bg-primary \">\n" + 
 					"        \n" + 
 					"        <li class=\"nav-item dropdown\">\n" + 
@@ -281,13 +290,13 @@ public class ListaAsignaturas extends HttpServlet {
 					"          </div>\n" + 
 					"      </ul>"
 					+ "<div>"
-					+ "<img src='banneredu.png' class='img-fluid'/></div>";
+					+ "<img src='banneredu.png' class='img-fluid'/></div>"
+					+ "<div class='text-center text-dark h3'>Lista de asignaturas</div>";
 			for (int i = 0; i < jsonArray.length(); i++) {
 			    JSONObject asignatura = jsonArray.getJSONObject(i);
 			    String asig = Interacciones.getAsignaturasPorAcronimo(asignatura.getString("acronimo"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 			    JSONObject json = new JSONObject(asig);
-			    html += "<div class='text-center text-dark h3'>Lista de asignaturas</div>"
-			    		+ "<div class=\"container my-3\">\n" + 
+			    html +=  "<div class=\"container my-3\">\n" + 
 			    		"        <div class=\"container m-auto bg-primary border border-2 border-dark rounded\">\n" + 
 			    		"            <div class=\"d-flex justify-content-around flex-column\">\n" + 
 			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
@@ -319,10 +328,11 @@ public class ListaAsignaturas extends HttpServlet {
 			    		"                <div class=\"d-flex justify-content-around flex-row\">\n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
 			    		"                        <div class=\"p-2 text-dark '\">Nota Media</div>\n" + 
-			    		"                        <div class=\"p-2 text-danger\">"+calcularNota(asignatura.getString("acronimo"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"))+"</div>\n" + 
+			    		"                        <div class=\"p-2 text-danger\">"+formatter.format(calcularNota(asignatura.getString("acronimo"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie")))+"</div>\n" + 
 			    		"                    </div>\n" + 
 			    		"                    <div class=\"d-flex\">\n" + 
 			    		"					<form action='profesor.html'>"+
+			    								 "<input name='acro' type='hidden' value='"+asignatura.getString("acronimo")+"'/>"+
 			    		"                        <button class=\"btn btn-info\">Ver Alumnos</button>\n" + 
 			    		"					</form>"+
 			    		"                    </div>\n" + 
@@ -333,7 +343,7 @@ public class ListaAsignaturas extends HttpServlet {
 			    		"       \n" + 
 			    		"    </div>"
 			    		+ "<script>"
-			    		+ "$.ajax({url : 'GetAlumnos',"
+			    		/**+ "$.ajax({url : 'GetAlumnos',"
 			            +"data : {acronimo: '" +asignatura.getString("acronimo")+"'},"
 			            +"method : 'post'," 
 			            +"dataType : 'json',"
@@ -341,17 +351,17 @@ public class ListaAsignaturas extends HttpServlet {
 			            +"alert('funciona bien');"
 			            +"}"
 			            +"});"
-			            + "$.ajax({url : 'getAsignatura',"
+			            /**+ "$.ajax({url : 'getAsignatura',"
 					            +"data : {acronimo: '" +asignatura.getString("acronimo")+"'},"
 					            +"method : 'post'," 
 					            +"dataType : 'json',"
 					            +"success : function(response){"
 					            +"alert('funciona bien');"
 					            +"}"
-					            +"});"
+					            +"});"*/
 			            +"</script>";	
 			}
-			String full = head+html+"<footer>Pagina para un trabajo de la asignatura DEW</footer></body>";
+			String full = head+html+"<div class='text-center'><footer>Pagina para un trabajo de la asignatura DEW</footer></div></body>";
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html");
 			response.getWriter().append(full);

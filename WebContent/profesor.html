@@ -4,27 +4,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lista Asignaturas</title>
     <script src='jquery-3.6.0.js'></script>
     <!-- Latest compiled and minified CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+   <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+   <!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 </head>
 <body class="bg-info" >
-    <div class="h2 text-center bg-dark text-info">Notas Nol</div>
-      <div class="container my-2">
-        <div class="d-flex justify-content-around flex-column p-2 ">
-            <div class="d-flex justify-content-around flex-row">
-                <div class="d-flex">
-                    <button id='ant' onclick='ant()' class='btn btn-dark'>Anterior</button>
-                </div>
-                <div class="d-flex">
-                    <button id='sig' onclick='sig()' class='btn btn-dark'>Siguiente</button>
-                </div>
-            </div>
-          </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Introduce la Nota</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
+      <div class="modal-body">
+        <p id='nombre'>Nombre: </p>
+        <p id='dni'>DNI: </p>
+        <p id='nota'>Nota: </p>
+        <p>Introduce la nota <input id='notita' type="number"/></p>
+        <div class="d-flex justify-content-around flex-column p-2">
+            <div class="d-flex justify-content-around flex-row">
+               <div class="d-flex">
+                   <button onclick='anterior(this)' class='btn btn-info mx-5 px-2'>Anterior</button>
+       			   <button onclick='siguiente(this)' class='btn btn-info mx-5 px-2'>Siguiente</button>
+                </div>
+              </div>
+         </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick='send(this)' class="btn btn-primary">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="h2 text-center bg-dark text-info">Notas Nol</div>
         
         <div class="container my-3">
             <div class="card text-white bg-primary mb-3" >
@@ -38,7 +56,7 @@
                         </div>
                         <div class="d-flex">
                             <div class="p-2 text-dark" >Nombre</div>
-                            <div class="p-2" id='nombre'></div>
+                            <div class="p-2" id='nombresin'></div>
                         </div>
                         <div class="d-flex">
                             <div class="p-2 text-dark" >Creditos</div>
@@ -103,23 +121,39 @@
 </body>
 
 <script>
-    let acronim ="";
-	$.getJSON("getAsignatura")
+    var acronim ="";
+    var urlParams = new URLSearchParams(window.location.search);
+    acronim = urlParams.get("acro");
+    $.ajax({
+    	url: 'getAsignatura',
+    	method: 'post',
+    	dataType: 'json',
+    	data: {'acronimo':acronim},
+    	success: function(res) {
+    		$('#nombresin').text(res.nombre);
+            $('#acronimo').text(res.acronimo);
+            $('#creditos').text(res.creditos);
+            $('#curso').text(res.curso);
+            $('#cuatrimestre').text(res.cuatrimestre);
+    	}
+    });
+	/**$.getJSON("getAsignatura")
 	.done(function(res){
+		console.log(res.nombre);
 		acronim = res.acronimo;
-		$('#nombre').text(res.nombre);
+		$('#nombresin').text(res.nombre);
         $('#acronimo').text(res.acronimo);
         $('#creditos').text(res.creditos);
         $('#curso').text(res.curso);
         $('#cuatrimestre').text(res.cuatrimestre);
         asig = {
     			acronimo:res.acronimo
-    	};
+    	};*/
         $.ajax({
 			url: 'GetProfs',
 			method: "post",
 			dataType: "json",
-			data: asig,
+			data: {acronimo:acronim},
 			success: function(res) {
 				var items = [];
 				$.each(res, function(key, val) {
@@ -129,13 +163,20 @@
 				    "class": "list-group",
 				    html: items.join( "" )
 				  }).appendTo("#profs");
-			}
-		});
+			}});
+		//});
+	//});
+	
+	
+var alumnos = [];
+var index = 0;
+	$.ajax({
+		url: 'GetAlumnos',
+    	method: 'post',
+    	dataType: 'json',
+    	data: {'acronimo':acronim}
 	});
 	
-	
-var alumnos = {};
-
  	$.getJSON('GetAlumnos')
 		.done(function(data){
 			  var items1 = [];
@@ -154,7 +195,7 @@ var alumnos = {};
 				notaMedia();
 				nota1 = val.nota;
 				if(nota1 == "") nota1 = "No calificado";
-			    items1.push("<div class='card col-md-5 m-auto my-1 border p-1 border-primary border-2 rounded'><img id='img"+key+"' width='150px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title' id='dni"+key+"'>DNI: "+val.dni+"</h4><h4 id='nombre"+key+"'>Nombre: "+val.nombre+"</h4><h5 id='apellidos"+key+"'>Apellidos: "+val.apellidos+"</h5><h5 class='text-danger' id='nota"+key+"'>Nota: "+nota1+"</h5><button id='"+key+"' onclick='cambiarNota(this)' class='btn btn-primary'>Cambiar Nota</button></div></div>");
+			    items1.push("<div class='card col-md-5 m-auto my-1 border p-1 border-primary border-2 rounded'><img id='img"+key+"' width='150px' height='250px' class='card-img-top'><div class='card-body'><h4 class='card-title' id='dni"+key+"'>DNI: "+val.dni+"</h4><h4 id='nombre"+key+"'>Nombre: "+val.nombre+"</h4><h5 id='apellidos"+key+"'>Apellidos: "+val.apellidos+"</h5><h5 class='text-danger' id='nota"+key+"'>Nota: "+nota1+"</h5><button onclick='cambiarNota(this)' id='"+key+"' type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#exampleModal'>Cambiar Nota</button></div></div>");
 			    $.getJSON("Foto?dni="+val.dni)
 			    	.done(function(res){
 			    		$("#img"+key).attr("src", "data:image/png;base64,"+res.img);
@@ -168,23 +209,26 @@ var alumnos = {};
 		});
  		
  		$("media").html(media)
-		asig = {
- 			acronimo: $("#acronimo").html()
- 		}
  		function notaMedia(){
  			$.ajax({
  				url: 'NotaMedia',
  				method: "post",
  				dataType: "json",
- 				data: asig,
+ 				data: {acronimo: acronim},
  				success: function(res) {
  					console.log(res);
- 					$("#media").html(res.media);
+ 					$("#media").html(res.media.toFixed(2));
  				}
  			});
  		}
 		function cambiarNota(event){
- 			let nota = prompt("Por favor, introduce la nota");
+			 index = event.id;
+			 console.log(alumnos);
+			 console.log(event);
+			 $("#nombre").text("Nombre: "+alumnos[index].nombre);
+			 $("#dni").text("DNI: "+alumnos[index].dni);
+			 $("#nota").text("Nota: "+alumnos[index].nota);
+ 			/**let nota = prompt("Por favor, introduce la nota");
  			let text;
  			if(nota < 0 || nota > 10 || nota == null || nota == ""){
  				alert("Valor incorrecto");
@@ -228,47 +272,107 @@ var alumnos = {};
  					notaMedia();
  					$('#nota'+event.id).text("Nota: "+ nota);
  				}
- 			});
+ 			});*/
  		}
+		function send(event) {
+			var nota = $("#notita").val();
+			if(nota < 0 || nota > 10 || nota == null || nota == ""){
+ 				alert("Valor incorrecto");
+ 				return;
+ 			}
+ 			
+ 			let datos = {
+ 					dni: alumnos[index].dni,
+ 					acronimo: $("#acronimo").html(),
+ 					nota: nota,
+ 			};
+ 			$.ajax({
+ 				url: 'CambiarNota',
+ 				method: "post",
+ 				dataType: "json",
+ 				data: datos,
+ 				success: function(res) {
+ 					notaAnt =$('#nota'+event.id).text();
+ 					notaAnt = notaAnt.substring(6);
+ 					console.log(notaAnt);
+ 					if(notaAnt == "No calificado"){
+ 						if (nota >= 5){
+ 							$("#aprobados").html(parseInt($("#aprobados").html())+1);
+ 							$("#no").html(parseInt($("#no").html())-1);
+ 						}
+ 						if (nota < 5){
+ 							$("#suspensos").html(parseInt($("#suspensos").html())+1);
+ 							$("#no").html(parseInt($("#no").html())-1);
+ 						}
+ 					}
+ 					else {
+ 						if(notaAnt < 5 && nota >= 5){
+ 							$("#aprobados").html(parseInt($("#aprobados").html())+1);
+ 							$("#suspensos").html(parseInt($("#suspensos").html())-1);
+ 						}
+ 						else if(notaAnt >= 5 && nota < 5) {
+ 							$("#aprobados").html(parseInt($("#aprobados").html())-1);
+ 							$("#suspensos").html(parseInt($("#suspensos").html())+1);
+ 						}
+ 					}
+ 					notaMedia();
+ 					nota = addZeroes(nota);
+ 					nota = String(nota);
+ 					$('#nota'+index).text("Nota: "+ nota);
+ 					$('#nota').text("Nota: "+ nota);
+ 				}
+ 			})
+		}
+		function addZeroes(num) {
+			// Convert input string to a number and store as a variable.
+			    var value = Number(num);      
+			// Split the input string into two arrays containing integers/decimals
+			    var res = num.split(".");     
+			// If there is no decimal point or only one decimal place found.
+			    if(res.length == 1 || res[1].length < 2) { 
+			// Set the number to two decimal places
+			        value = value.toFixed(1);
+			    }
+			// Return updated or original number.
+			return value;
+			}
+
+		function siguiente(event) {
+	        id = index;
+	        if(index == alumnos.length-1) {
+	            index=0;
+	            id = 0;
+	            num = 0;
+	        }
+	        else {
+	            index++;
+	            var num = parseInt(id)+1;
+	        }
+	        console.log(num);
+	            $("#nombre").html("Nombre: "+alumnos[num].nombre);
+	            $("#dni").html("DNI: "+alumnos[num].dni);
+	            $("#nota").html("Nota: "+alumnos[num].nota);
+	            $('#notita').val('');
+	    }
+
+	    function anterior(event) {
+	        id = index;
+	        if(index == 0) {
+	            index=alumnos.length-1;
+	            id = alumnos.length-1;
+	            num = alumnos.length-1;
+	        }
+	        else{
+	            index--;
+	            var num = parseInt(id)-1;
+	        }
+	        $("#nombre").html("Nombre: "+alumnos[num].nombre);
+	        $("#dni").html("DNI: "+alumnos[num].dni);
+	        $("#nota").html("Nota: "+alumnos[num].nota);
+	        $('#notita').val('');
+	    }
 		
-		function sig() {
-			$.getJSON('GetAsigProf')
-			.done(function(data){
-					var sig = "";
-					var acronsig = "";
-				  $.each(data, function(key, val) {
-					 if(val.acronimo == $("#acronimo").html()) sig=key+1;
-					 if(sig+1== data.length) sig = 0;
-				  })
-				  $.ajax({url : 'getAsignatura',
-					      data : {acronimo: ' '},
-					      method : 'post',
-					      dataType : 'json',
-					      success : function(response){
-					            window.location.href = profesor.html;
-					            }
-					       })
-		})
-		}
-		function ant() {
-			$.getJSON('GetAsigProf')
-			.done(function(data){
-					var ant = "";
-					var acronsig = "";
-				  $.each(data, function(key, val) {
-					 if(val.acronimo == $("#acronimo").html()) ant=key-1;
-					 if(ant == -1) ant = data.length-1;
-				  })
-				  $.ajax({url : 'getAsignatura',
-					      data : {acronimo: ' '},
-					      method : 'post',
-					      dataType : 'json',
-					      success : function(response){
-					            window.location.href = profesor.html;
-					            }
-					       })
-		})
-		}
+		
 		
 			
 

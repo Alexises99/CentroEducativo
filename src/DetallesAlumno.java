@@ -107,10 +107,12 @@ public class DetallesAlumno extends HttpServlet {
 		    
 		    String s = Interacciones.getAsignaturasPorAcronimo(asignatura.getString("asignatura"),(String)request.getSession().getAttribute("token"),(String)request.getSession().getAttribute("cookie"));
 		    JSONObject asignatura1 = new JSONObject(s);
+		    String nota = asignatura.getString("nota");
+		    if(nota.equals("")) nota = "Sin calificación";
 		    html += " <tr>" + 
 		    		" <th scope=\"row\">"+asignatura1.getString("acronimo")+"</th>" + 
 		    		" <td>"+asignatura1.getString("nombre")+"</td>" + 
-		    		" <td>"+asignatura.getString("nota")+"</td>" + 
+		    		" <td>"+nota+"</td>" + 
 		    		" </tr>";
 		}
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
@@ -119,11 +121,20 @@ public class DetallesAlumno extends HttpServlet {
 				"</table>" +
 				"</div>" + 
 				"<div class=\"text-center\">" + 
-				"  Valencia a"+ dtf.format(now) +
+				"  Valencia a "+ dtf.format(now) +
+				"</div>" +
+				"<div class=\"text-center\">" + 
+				"  <button onclick='imprimir()' class='btn btn-dark text-light'>Imprimir</button>" +
 				"</div>" +
 				"</div>" +
 				"<script>"+
-				"$.getJSON(\"Foto?dni=12345678W\")\n" + 
+				"function imprimir() {"
+				+ "$('body,html').css({\n" + 
+				"        'height':'297mm',\n" + 
+				"        'width':'210mm'\n" + 
+				"    })"+
+				"}"
+				+ "$.getJSON(\"Foto?dni=12345678W\")\n" + 
 				".done(function(response){\n" + 
 				"$(\"#dni\").text(response.dni);\n" + 
 				"$(\"#img\").attr(\"src\", \"data:image/png;base64,\"+response.img);\n" + 

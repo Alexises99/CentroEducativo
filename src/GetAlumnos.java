@@ -54,6 +54,7 @@ public class GetAlumnos extends HttpServlet {
 		// TODO Auto-generated method stub
 		String acronimo = request.getParameter("acronimo");
 		this.acronimo = acronimo;
+		response.getWriter().append("{msg:okey}");
 	}
 
 }
